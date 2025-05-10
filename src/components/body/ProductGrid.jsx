@@ -22,7 +22,7 @@ const ProductGrid = ({ products }) => {
                     {chunk.map((product, colIndex) => (
                         <Col key={colIndex} >
                             <Items
-                                id={product.id}
+                                id={product._id}
                                 src={product.src}
                                 name={product.name}
                                 price={product.price.toLocaleString('vi-VN')}

@@ -5,22 +5,31 @@ import Row from 'react-bootstrap/Row';
 import { useState, useEffect } from 'react';
 import ProductGrid from './ProductGrid';
 import { Link } from 'react-router';
+import api from '../../api/api';
 function Option(props) {
-    const [products, setProducts] = useState([]);
 
-    const getData = () => {
-        fetch(`http://localhost:5000/products?category_id=${props.value_id}`)
-            .then((response) => {
-                return response.json()
-            })
-            .then((data) => {
-                setProducts(data)
-            })
+const [products, setProducts] = useState([]);
 
-    }
-    useEffect(() => {
-        getData();
-    }, []);
+ const getData = () => {
+    api.get(`/v1/product`, {
+        params: {
+            category_id: props.value_id
+        }
+    })
+    .then((response) => {
+        // console.log(response.data)
+        setProducts(response.data);
+    
+    })
+    .catch((error) => {
+        console.error("Lỗi khi lấy danh sách sản phẩm:", error);
+    });
+}
+
+useEffect(() => {
+    getData();
+}, []);
+
 
     return (
         <Container className="text-align-center py-2 my-2 ">

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 function Items(props) {
+    console.log(props)
     return (
         <div className="item ">
             <div className="a">
@@ -8,7 +9,7 @@ function Items(props) {
             </div>
             <div className="detail">
                 {/* {console.log(props.id)} */}
-                <Link className="tb tw ct-link line" to={`${props.id}/product-detail`}>{props.name}</Link>
+                <Link className="tb tw ct-link line" to={`${props._id}/product-detail`}>{props.name}</Link>
                 {/* <h5>{props.price}</h5> */}
                 <div className="d-flex align-items-center ">
                     <p className="ct-p fw-bold m-0 ">{props.price}đ</p>

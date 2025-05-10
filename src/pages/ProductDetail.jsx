@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router';
 import { addToCart } from '../redux/apiRequest';
 import { AtomicBlockUtils, CompositeDecorator } from 'draft-js';
 import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
+import api from "../api/api.js"
 
 // Component để render ảnh trong editor
 const ImageComponent = (props) => {
@@ -81,47 +82,42 @@ const ProductDetail = () => {
     const [editorState, setEditorState] = useState(() => 
         EditorState.createEmpty(createDecorator())
     );
-
+    // console.log(id)
     // Fetch dữ liệu sản phẩm
     useEffect(() => {
-        setLoading(true);
-        setError(null);
+    setLoading(true);
+    setError(null);
 
-        fetch(`http://localhost:5000/products/${id}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Không thể tải dữ liệu sản phẩm");
+    api.get(`/v1/product/${id}`)
+        .then((response) => {
+            const data = response.data;
+            setProduct(data);
+
+            // Nếu sản phẩm có mô tả, hiển thị trong editor
+            if (data.description) {
+                try {
+                    const contentState = convertFromRaw(data.description);
+                    setEditorState(EditorState.createWithContent(
+                        contentState,
+                        createDecorator() // Sử dụng decorator khi tạo editorState
+                    ));
+                } catch (error) {
+                    console.error("Lỗi khi parse mô tả sản phẩm:", error);
+                    // Không set lỗi chung vì không muốn ảnh hưởng đến việc hiển thị sản phẩm
                 }
-                return response.json();
-            })
-            .then((data) => {
-                setProduct(data);
-                
-                // Nếu sản phẩm có mô tả, hiển thị trong editor
-                if (data.description) {
-                    try {
-                        const contentState = convertFromRaw(data.description);
-                        setEditorState(EditorState.createWithContent(
-                            contentState,
-                            createDecorator() // Sử dụng decorator khi tạo editorState
-                        ));
-                    } catch (error) {
-                        console.error("Lỗi khi parse mô tả sản phẩm:", error);
-                        // Không set lỗi chung vì không muốn ảnh hưởng đến việc hiển thị sản phẩm
-                    }
-                }
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
-                setError("Không thể tải dữ liệu sản phẩm. Vui lòng thử lại sau.");
-                setLoading(false);
-            });
-    }, [id]);
+            }
+            setLoading(false);
+        })
+        .catch(error => {
+            console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
+            setError("Không thể tải dữ liệu sản phẩm. Vui lòng thử lại sau.");
+            setLoading(false);
+        });
+}, [id]);
 
     // Lấy danh sách sản phẩm để hiển thị sản phẩm liên quan
     useEffect(() => {
-        fetch(`http://localhost:5000/products`)
+        fetch(`http://localhost:8000/v1/product`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Không thể tải danh sách sản phẩm");

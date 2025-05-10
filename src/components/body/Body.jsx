@@ -8,12 +8,13 @@ import { useState, useEffect } from "react";
 import Option from "./Option"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons';
+// import api from '../../api/api';
 function Body() {
     const [images, setImages] = useState([]);
 
     // Hàm getData để gọi API
     const getData = async () => {
-        const url = "http://localhost:5000/products?category_id=4000";
+        const url = "http://localhost:8000/v1/category";
         try {
             const response = await fetch(url);
             if (!response.ok) {
@@ -28,7 +29,6 @@ function Body() {
             console.error(error.message);
         }
     };
-
     useEffect(() => {
         getData();
     }, []);

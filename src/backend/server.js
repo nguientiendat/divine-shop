@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const authRoute = require("./routes/auth");
 const userRoute  = require("./routes/user");
+const productRoute = require("./routes/product");
+const categoryRoute = require("./routes/category");
 // const authController = require("./controllers/authController");
 
 const app = express();
@@ -33,6 +35,9 @@ app.use(express.json())
   //ROUTEs
 app.use("/v1/auth",authRoute);
 app.use("/v1/user",userRoute)
+app.use("/v1/category", categoryRoute);
+app.use("/v1/product", productRoute);
+
 
 
 app.listen(8000, () => {
