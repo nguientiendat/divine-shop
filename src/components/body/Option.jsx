@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import { useState, useEffect } from 'react';
 import ProductGrid from './ProductGrid';
+import { Link } from 'react-router';
 function Option(props) {
     const [products, setProducts] = useState([]);
 
@@ -13,7 +14,6 @@ function Option(props) {
                 return response.json()
             })
             .then((data) => {
-                console.log(data)
                 setProducts(data)
             })
 
@@ -23,13 +23,16 @@ function Option(props) {
     }, []);
 
     return (
-        <Container className="text-align-center py-2 ">
+        <Container className="text-align-center py-2 my-2 ">
             <div className="name-option d-flex justify-content-between">
                 <div className="tb">
                     <h3>{props.name}</h3>
                 </div>
                 <div className="btn" >
-                    <Button variant="primary">Khám Phá</Button>
+                    <Button variant="primary">
+                    <Link to="/trending" className="tw fw-semibold ">Kham Pha </Link>
+
+                    </Button>
                 </div>
 
             </div>

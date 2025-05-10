@@ -1,6 +1,5 @@
 import "../styles/App.css";
-import Header from "../components/header/Header";
-import Body from "../components/body/Body";
+
 import { Route, Routes } from "react-router";
 import PageRoot from "../pages/PageRoot";
 import Layout from "../pages/Layout";
@@ -9,6 +8,9 @@ import LogIn from "../pages/LogIn";
 import Register from "../pages/Register";
 import Cart from "../pages/Cart";
 import PageAdmin from "../pages/PageAdmin";
+import TestA from "../pages/TestA"
+import "../styles/style.css"
+import Trending from "../pages/Trending";
 function App() {
   return (
   <Routes>
@@ -19,6 +21,10 @@ function App() {
       <Route path = "/register" element = {<Register />} />
       <Route path = "/cart" element = {<Cart />} />
       <Route path = "/pageadmin" element = {<PageAdmin />} />
+      <Route path = "/test" element = {<TestA />} />
+      <Route path = "/trending" element = {<Trending />} />
+
+
 
 
     </Route>

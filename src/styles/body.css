@@ -84,3 +84,16 @@ body {
 .mg {
     margin-bottom: 5px;
 }
+.test-bgr{
+    background:
+    url("https://divineshop.vn/static/7f94849d8e8cb55e5d838a5bf3f187c6.png") no-repeat top center,
+    #000d21; /* màu nền ở dưới ảnh */
+  background-size: 100% auto; /* Ảnh phủ chiều ngang, chiều cao tự tính */
+  height:65vh;
+  /* margin-bottom: */
+    
+}
+.spbanchay{
+    top:16px;
+    left:340px
+}

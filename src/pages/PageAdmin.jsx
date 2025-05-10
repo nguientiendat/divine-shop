@@ -1,8 +1,9 @@
-import Container from "react-bootstrap/container"
+import Container from "react-bootstrap/Container"
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from "react";
 import { Row, Col, Form, Button } from 'react-bootstrap';
+import Dashboard from "../components/body/Dashbrd";
 
 const PageAdmin = () => {
     const user = useSelector((state => state.auth.login.currentUser))
@@ -104,8 +105,12 @@ const PageAdmin = () => {
 
     return (
         <div>
+            <Container>
+                <Dashboard />
+            </Container>
             <div>
                 <Container className="my-3 bg-white p-4 rounded">
+                  
                     <h2 className="mb-4">Thêm sản phẩm</h2>
                     <Form onSubmit={handleSubmit}>
                         <Row className="mb-3">

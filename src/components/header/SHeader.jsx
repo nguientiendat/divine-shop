@@ -40,15 +40,15 @@ function SHeader() {
     return (
         <div className="set-bg-2 ">
             <Container>
-                <div className="d-flex justify-content-center align-items-center">
-                    <div className="custom-ctn py-1" >
+                <div className="d-flex justify-content-between align-items-center w-100">
+                    <div className="custom-ctn py-1 w-100" >
                         <div className="fheader d-flex justify-content-between py-1">
                             <div className="logo">
                                 <Link to="" className="tw fs-2 fw-semibold"> DivineShop</Link>
                             </div>
-                            <div className="search">
+                            <div className="search mx-5">
                                 <Row>
-                                    <Col xs="auto">
+                                    <Col lg="11">
                                         <Form.Control
                                             type="text"
                                             placeholder="Search"
@@ -57,7 +57,7 @@ function SHeader() {
                                     </Col>
                                 </Row>
                             </div>
-                            <div className="user w-25">
+                            <div className="user w-25 ">
                                 {user ? (<div >
 
 
@@ -89,6 +89,7 @@ function SHeader() {
                                                 <Dropdown.Item as={Link} to="/pageadmin">
                                                     Quản lý
                                                 </Dropdown.Item></>) : (<div></div>)}
+                                                
 
                                         </Dropdown.Menu>
                                     </Dropdown>
@@ -98,7 +99,9 @@ function SHeader() {
                                     <Link to="/register" className="tw fw-semibold">Đăng ký</Link>
                                 </>)}
                             </div>
-                            <CartShopping />
+                            <div className = "">
+                             <CartShopping />
+                            </div>
                         </div>
 
                     </div>
@@ -107,7 +110,7 @@ function SHeader() {
 
 
 
-                <div className="d-flex justify-content-center">
+                {/* <div className="d-flex ">
                     <div className="custom-ctn py-2" >
                         <div className="nav justify-content-between">
                             <div className="tutorial ">
@@ -132,7 +135,7 @@ function SHeader() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
             </Container >
         </div >

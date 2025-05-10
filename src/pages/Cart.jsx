@@ -5,48 +5,47 @@ import { useSelector } from 'react-redux';
 import { Button } from "react-bootstrap";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import api from "../api/api"
+
+
 
 const Cart = () => {
     // deleteCartProduct()
     const [products, setProducts] = useState([])
     const [isVisible, setIsVisible] = useState(false);
+    const [account_balance,setAccount_balance] = useState(100000000)
+    
     const toggleVisibility = () => {
         setIsVisible((prev) => !prev); // Đảo ngược trạng thái
     };
     const user = useSelector((state => state.auth.login.currentUser))
 
     useEffect(() => {
-        fetch('http://localhost:5000/cart')
-            .then((response) => {
-                return response.json()
-            })
-            .then((data) => {
-                setProducts(data)
+        api.get('/cart')
+            .then(res=>setProducts(res.data))
+            .catch(err => console.error("Loi !!!!",err))
 
-            })
-    }, [products])
+    }, []);
+    console.log(products)
+ 
     const deleteProduct = async (productId) => {
         try {
             const response = await fetch(`http://localhost:5000/cart/${productId}`, {
                 method: 'DELETE',
             });
-
+    
             if (!response.ok) {
                 throw new Error(`Lỗi khi xóa sản phẩm: ${response.statusText}`);
             }
-
+    
             // Cập nhật state, loại bỏ sản phẩm đã xóa
-            setProducts(products.filter(product => product.id !== productId));
+            setProducts((prevProducts) => prevProducts.filter(product => product.id !== productId));
             console.log(`Sản phẩm với ID ${productId} đã bị xóa.`);
         } catch (error) {
             console.error('Lỗi:', error);
         }
     };
-
-    // Gọi hàm fetchProducts khi component được render lần đầu
-    // useEffect(() => {
-    //     fetchProducts();
-    // }, []);
+   
     const handlePrice = () => {
         let price = 0;
         for (let i = 0; i < products.length; i++) {
@@ -62,19 +61,29 @@ const Cart = () => {
     }
     const ammountAdded = () => {
         let amountAdd
-        if (+user.account_balance >= handlePrice()) {
+        if (account_balance >= handlePrice()) {
             amountAdd = 0;
             return amountAdd
         } else {
-            amountAdd = handlePrice() - (+user.account_balance)
+            amountAdd = handlePrice() - (account_balance)
             return amountAdd
         }
     }
     useEffect(() => {
         ammountAdded()
-    }, [+user.account_balance])
+    }, [account_balance])
 
-
+    const handleBuyNow = (amountAdd) => {
+        
+        if(account_balance>=amountAdd){
+            alert("Thanh toan thanh cong, xin doi he thong xu ly")
+            setAccount_balance (account_balance - handlePrice())
+            console.log(account_balance)
+        }
+        else{
+            alert("So du khong du!!! Vui long nap them tien")
+        }
+    }
 
 
     return (
@@ -125,7 +134,7 @@ const Cart = () => {
                         </div>
                         <div className="d-flex justify-content-between my-2 ">
                             <div>Số dư hiện tại: </div>
-                            <div className="fw-bold">{+user.account_balance.toLocaleString('vi-VN')}</div>
+                            <div className="fw-bold">{account_balance.toLocaleString('vi-VN')}</div>
 
                         </div>
                         <div className="d-flex justify-content-between my-2">
@@ -137,14 +146,13 @@ const Cart = () => {
 
                         <div className="text-center">Quét mã thanh toán không cần nạp</div>
                         <Button onClick={showQr} style={{ width: "100%", marginBottom: "15px", backgroundColor: ' #005BAA' }}>Mua siêu tốc qua Mobile Banking</Button>
-                        <Button style={{ width: "100%", backgroundColor: ' #AE2070' }}>Mua siêu tốc với MoMo</Button>
+                        <Button onClick={()=> handleBuyNow(handlePrice())} style={{ width: "100%", backgroundColor: ' #AE2070' }}>Mua ngay</Button>
                         <img style={{ display: isVisible ? "block" : "none", width: '100%' }}
                             src={`https://img.vietqr.io/image/mbbank-0352290387-compact2.jpg?amount=${handlePrice()}&addInfo=dong%20gop%20quy%20vac%20xin&accountName=nguyen%20tien%20dat%20`} />
                     </div>
 
                 </div>
-
-
+            
             </Container>
         </div>
 
