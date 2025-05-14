@@ -88,12 +88,11 @@ function Body() {
                     </Col>
                 </Row>
             </Container>
-            <Option name="Học tập" value_id="1000" />
-            <Option name="Giải trí" value_id="2000" />
-            <Option name="Giải trí" value_id="3000" />
+            <Option name="Học tập" value_id="1000" value ="b"/>
+            <Option name="Giải trí" value_id="2000" value = "b" />
             <div className = "test-bgr ">
                 <div className = "my-3 position-relative ">
-                    <div className = "mx-5 border w-25 rounded-pill d-flex position-absolute spbanchay ">
+                    <div className = "border w-25 rounded-pill d-flex position-absolute spbanchay ">
                        <div className = "mx-2 my-2" >
                         <img src ="https://cdn.divineshop.vn/static/1478de4bf059d759990c4849f3c3e8ce.svg"></img>
                        </div>
@@ -101,7 +100,7 @@ function Body() {
                         <h2 className = "text-white fw-bold ">#San Pham Ban Chay Nhat</h2>
                        </div>
                     </div>
-                    <Option value_id="3000"  />
+                    <Option value_id="3000" value = "z" />
                 </div>
             </div>                    
 

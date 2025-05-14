@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import Items from './Items'
 
-const ProductGrid = ({ products }) => {
+const ProductGrid = ({ products, value }) => {
     // Chia mảng sản phẩm thành các nhóm 4 sản phẩm
     const chunkArray = (arr, size) => {
         const result = [];
@@ -12,7 +12,7 @@ const ProductGrid = ({ products }) => {
         return result;
 
     };
-
+    
     const productChunks = chunkArray(products, 4); // Chia thành từng nhóm 4
 
     return (
@@ -28,7 +28,7 @@ const ProductGrid = ({ products }) => {
                                 price={product.price.toLocaleString('vi-VN')}
                                 original_price={product.original_price}
                                 discount={product.discount}
-
+                                value = {value}
                             />
                         </Col>
                     ))}

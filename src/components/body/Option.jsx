@@ -6,14 +6,14 @@ import { useState, useEffect } from 'react';
 import ProductGrid from './ProductGrid';
 import { Link } from 'react-router';
 import api from '../../api/api';
-function Option(props) {
+function Option({value_id, name, value}) {
 
 const [products, setProducts] = useState([]);
 
  const getData = () => {
     api.get(`/v1/product`, {
         params: {
-            category_id: props.value_id
+            category_id: value_id
         }
     })
     .then((response) => {
@@ -26,16 +26,17 @@ const [products, setProducts] = useState([]);
     });
 }
 
+
 useEffect(() => {
     getData();
 }, []);
 
-
+// console.log(products)
     return (
         <Container className="text-align-center py-2 my-2 ">
             <div className="name-option d-flex justify-content-between">
                 <div className="tb">
-                    <h3>{props.name}</h3>
+                    <h3>{name}</h3>
                 </div>
                 <div className="btn" >
                     <Button variant="primary">
@@ -46,7 +47,7 @@ useEffect(() => {
 
             </div>
             <Row className="my-3 ">
-                <ProductGrid products={products} />
+                <ProductGrid products={products} value ={value} />
 
             </Row>
         </Container>
