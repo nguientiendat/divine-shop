@@ -8,6 +8,7 @@ const userRoute  = require("./routes/user");
 const productRoute = require("./routes/product");
 const categoryRoute = require("./routes/category");
 // const authController = require("./controllers/authController");
+const cartRoute = require('./routes/cart');
 
 const app = express();
 dotenv.config();
@@ -37,7 +38,7 @@ app.use("/v1/auth",authRoute);
 app.use("/v1/user",userRoute)
 app.use("/v1/category", categoryRoute);
 app.use("/v1/product", productRoute);
-
+app.use('/v1/cart', cartRoute);
 
 
 app.listen(8000, () => {

@@ -16,9 +16,9 @@ function THeader() {
                             </div>
                             <div className="trick w-75">
                                 <Link to="/" className="tw tb mx-4"><img src="https://cdn.divineshop.vn/image/catalog/Anh/Icon%20svg/Nap-thesvg-30724.svg?hash=1640449820" /> Thủ thuật và tin tức</Link>
-                                <Link to="/" className="tw tb mx-4"><img src="https://cdn.divineshop.vn/image/catalog/Anh/Icon%20svg/Nap-thesvg-30724.svg?hash=1640449820" /> Thủ thuật và tin tức</Link>
-                                <Link to="/" className="tw tb mx-4"><img src="https://cdn.divineshop.vn/image/catalog/Anh/Icon%20svg/Nap-thesvg-30724.svg?hash=1640449820" /> Thủ thuật và tin tức</Link>
-                                <Link to="/" className="tw tb mx-4"><img src="https://cdn.divineshop.vn/image/catalog/Anh/Icon%20svg/Nap-thesvg-30724.svg?hash=1640449820" /> Thủ thuật và tin tức</Link>
+                                <Link to="/" className="tw tb mx-4"><img src="https://cdn.divineshop.vn/image/catalog/Anh/Icon svg/Gioi-thieu-ban-be-87652.svg?hash=1640449820" /> Hướng dẫn mua hàng </Link>
+                                <Link to="/" className="tw tb mx-4"><img src="https://cdn.divineshop.vn/image/catalog/Anh/Icon svg/Lien-he-hop-tac-33199.svg?hash=1640449820" /> Liên hệ hợp tác </Link>
+                                <Link to="/" className="tw tb mx-4"><img src="https://cdn.divineshop.vn/image/catalog/Anh/14.03.2022/sale-80749.svg?hash=1730876946" /> GA - Sale Divine </Link>
                             </div>
                         </div>
 

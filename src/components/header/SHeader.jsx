@@ -44,7 +44,8 @@ function SHeader() {
                     <div className="custom-ctn py-1 w-100" >
                         <div className="fheader d-flex justify-content-between py-1">
                             <div className="logo">
-                                <Link to="" className="tw fs-2 fw-semibold"> DivineShop</Link>
+                                <Link to="" className="tw fs-2 fw-semibold">
+                                 <img loading="lazy" src="https://cdn.divineshop.vn/static/b1402e84a947ed36cebe9799e47f61c2.svg" className="logo-img" alt="Divine Shop"></img>DivineShop</Link>
                             </div>
                             <div className="search mx-5">
                                 <Row>

@@ -382,9 +382,9 @@ const ProductDetail = () => {
                     <h3>{product.name}</h3>
                     <p> <FontAwesomeIcon icon={faBox} /> Tình trạng: <span className='ct-color-green'>{product.status}</span></p>
                     <p><FontAwesomeIcon icon={faTag} /> Thể loại: App, Giải trí, Game</p>
-                    <h4>{product.price}đ</h4>
+                    <h4>{product.price? product.price.toLocaleString('vi-VN') : "Loading...!"}đ</h4>
                     <div className="d-flex align-items-center">
-                        <h5 className="ct-c m-0">{product.original_price}đ </h5>
+                        <h5 className="ct-c m-0">{product.original_price? product.original_price.toLocaleString('vi-VN') : "Loading...!"}đ </h5>
                         <span className="sale rounded fw-bold mx-2 p-1" >-{product.discount}%</span>
                     </div>
                     <div className="border w-100 my-3"></div>

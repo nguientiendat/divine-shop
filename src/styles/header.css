@@ -93,3 +93,7 @@
 .search {
     width: 25%
 }
+.logo-img{
+    max-height: 50px !important;
+    width: 40px;
+}

@@ -5,12 +5,12 @@ import Items from "../components/body/Items"
 const Trending = ()=>{
     const [Products,setProducts] = useState([])
    useEffect(()=>{
-        api.get('/products')
+        api.get('/v1/product')
             .then(res => setProducts(res.data))
             .catch(err => console.error("Loi !!!!",err))
 
    },[]);
-//    console.log(Products)
+   console.log(Products)
     return(
         <div className = "my-3">
             <Container>

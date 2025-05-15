@@ -8,6 +8,25 @@ import { Link } from 'react-router';
 import api from '../../api/api';
 function Option({value_id, name, value}) {
 
+// const [products, setProducts] = useState([]);
+
+//  const getData = () => {
+//     api.get(`http://localhost:5000/product`, {
+//         params: {
+//             category_id: value_id
+//         }
+//     })
+//     .then((response) => {
+//         // console.log(response.data)
+//         setProducts(response.data);
+    
+//     })
+//     .catch((error) => {
+//         console.error("Lỗi khi lấy danh sách sản phẩm:", error);
+//     });
+// }
+
+
 const [products, setProducts] = useState([]);
 
  const getData = () => {
@@ -25,6 +44,7 @@ const [products, setProducts] = useState([]);
         console.error("Lỗi khi lấy danh sách sản phẩm:", error);
     });
 }
+
 
 
 useEffect(() => {

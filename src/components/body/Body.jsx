@@ -7,7 +7,14 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useState, useEffect } from "react";
 import Option from "./Option"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGamepad } from '@fortawesome/free-solid-svg-icons';
+import { faGamepad, faVirus } from '@fortawesome/free-solid-svg-icons';
+import { faBriefcase } from '@fortawesome/free-solid-svg-icons';
+import { faGraduationCap } from '@fortawesome/free-solid-svg-icons';
+import { faStream } from '@fortawesome/free-solid-svg-icons';
+import { faGoogle, faSteam, faWindows, faXbox } from '@fortawesome/free-brands-svg-icons';
+
+
+
 // import api from '../../api/api';
 function Body() {
     const [images, setImages] = useState([]);
@@ -41,15 +48,15 @@ function Body() {
                     <Col className="mx-2 set-bg-3 rounded">
                         <Row className="d-flex flex-column justify-content-between">
 
-                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />Lam Viec</Link>
-                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />Hoc Tap</Link>
-                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />Game Steam</Link>
-                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />Edit Anh</Link>
-                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />WinDow</Link>
-                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />Google</Link>
-                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />Steam Wallet</Link>
-                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />Diệt Virus</Link>
-                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />Xbox, iTunes Gift Card</Link>
+                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGamepad} style={{ color: "#404245" }} className="mx-2" />Giải trí</Link>
+                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faBriefcase} style={{ color: "#404245" }} className="mx-2" />Làm việc</Link>
+                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGraduationCap} style={{ color: "#404245" }} className="mx-2" />Học tập</Link>
+                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faStream} style={{ color: "#404245" }} className="mx-2" />Edit Anh</Link>
+                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faWindows} style={{ color: "#404245" }} className="mx-2" />WinDow</Link>
+                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faGoogle} style={{ color: "#404245" }} className="mx-2" />Google</Link>
+                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faSteam} style={{ color: "#404245" }} className="mx-2" />Steam Wallet</Link>
+                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faVirus} style={{ color: "#404245" }} className="mx-2" />Diệt Virus</Link>
+                            <Link className='tw tb mg fs-5 '><FontAwesomeIcon icon={faXbox} style={{ color: "#404245" }} className="mx-2" />Xbox, iTunes Gift Card</Link>
 
 
                         </Row>
