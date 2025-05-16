@@ -70,19 +70,19 @@ const authSlice = createSlice ({
             state.addProduct.error = true;
             state.addProduct.success = false
         },
-        deleteProductStart:(state) =>{
-            state.deleteProduct.isFetching = true
-        },
-        deleteProductSuccess: (state)=>{
-            state.deleteCartProduct.isFetching=false;
-            state.deleteCartProduct.errow = false;
-            state.deleteCartProduct.success = true
-        },
-        deleteProductFailed: (state)=>{
-            state.deleteCartProduct.isFetchin=false;
-            state.deleteCartProduct.errow = true;
-            state.deleteCartProduct.success = false
-        }
+  deleteProductStart: (state) => {
+      state.deleteCartProduct.isFetching = true;
+    },
+    deleteProductSuccess: (state) => {
+      state.deleteCartProduct.isFetching = false;
+      state.deleteCartProduct.error = false;
+      state.deleteCartProduct.success = true;
+    },
+    deleteProductFailed: (state) => {
+      state.deleteCartProduct.isFetching = false;
+      state.deleteCartProduct.error = true;
+      state.deleteCartProduct.success = false;
+    }
     }
 
 })

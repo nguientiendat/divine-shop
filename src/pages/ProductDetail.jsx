@@ -12,6 +12,7 @@ import { addToCart } from '../redux/apiRequest';
 import { AtomicBlockUtils, CompositeDecorator } from 'draft-js';
 import { Editor, EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import api from "../api/api.js"
+import { useSelector } from 'react-redux';
 
 // Component để render ảnh trong editor
 const ImageComponent = (props) => {
@@ -49,41 +50,15 @@ const ProductDetail = () => {
     const [couponCode, setCouponCode] = useState(''); // Thêm state cho mã giảm giá
     const [loading, setLoading] = useState(true); // Thêm state loading để xác định trạng thái tải
     const [error, setError] = useState(null); // Thêm state lỗi để xử lý lỗi
-    
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     // State cho popup chèn ảnh
     const [showImageModal, setShowImageModal] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    // Tạo Decorator để xử lý entity IMAGE
-    const createDecorator = () => {
-        return new CompositeDecorator([
-            {
-                strategy: (contentBlock, callback, contentState) => {
-                    contentBlock.findEntityRanges(
-                        (character) => {
-                            const entityKey = character.getEntity();
-                            return (
-                                entityKey !== null &&
-                                contentState.getEntity(entityKey).getType() === 'IMAGE'
-                            );
-                        },
-                        callback
-                    );
-                },
-                component: ImageComponent,
-            },
-        ]);
-    };
-
-    // Khởi tạo editorState với decorator
-    const [editorState, setEditorState] = useState(() => 
-        EditorState.createEmpty(createDecorator())
-    );
-    // console.log(id)
-    // Fetch dữ liệu sản phẩm
+    const user = useSelector((state => state.auth.login.currentUser))
     useEffect(() => {
     setLoading(true);
     setError(null);
@@ -114,6 +89,63 @@ const ProductDetail = () => {
             setLoading(false);
         });
 }, [id]);
+    // Xử lý thêm vào giỏ hàng
+    const handleAddToCart = () => {
+        if (!product) return;
+        if(!email.trim()||!phone.trim()) {
+        setError("Vui lòng nhập đầy đủ email và số điện thoại!");
+        return
+       
+    }
+     if (user === null) {
+            alert("Vui lòng đăng nhập trước khi thêm vào giỏ hàng!");
+            navigate("/login"); // <-- chuyển hướng đến trang login
+            return;
+        
+    }
+    setError("");
+        const data = {
+            user_id : user._id,
+            product_id: product._id,
+            name: product.name,
+            price: product.price,
+            original_price: product.original_price,
+            discount: product.discount,
+            src: product.src,
+            emailUser: email,
+            phoneNumber: phone
+        };
+        console.log(data)
+        addToCart(data, dispatch, navigate);
+    };
+    // Tạo Decorator để xử lý entity IMAGE
+    const createDecorator = () => {
+        return new CompositeDecorator([
+            {
+                strategy: (contentBlock, callback, contentState) => {
+                    contentBlock.findEntityRanges(
+                        (character) => {
+                            const entityKey = character.getEntity();
+                            return (
+                                entityKey !== null &&
+                                contentState.getEntity(entityKey).getType() === 'IMAGE'
+                            );
+                        },
+                        callback
+                    );
+                },
+                component: ImageComponent,
+            },
+        ]);
+    };
+
+    // Khởi tạo editorState với decorator
+    const [editorState, setEditorState] = useState(() => 
+        EditorState.createEmpty(createDecorator())
+    );
+    // console.log(id)
+    // Fetch dữ liệu sản phẩm
+   
 
     // Lấy danh sách sản phẩm để hiển thị sản phẩm liên quan
     useEffect(() => {
@@ -133,20 +165,7 @@ const ProductDetail = () => {
             });
     }, []);
 
-    // Xử lý thêm vào giỏ hàng
-    const handleAddToCart = () => {
-        if (!product) return;
 
-        const data = {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            original_price: product.original_price,
-            discount: product.discount,
-            src: product.src
-        };
-        addToCart(data, dispatch, navigate);
-    };
 
     // Xử lý mua ngay
     const handleBuyNow = () => {
@@ -387,6 +406,34 @@ const ProductDetail = () => {
                         <h5 className="ct-c m-0">{product.original_price? product.original_price.toLocaleString('vi-VN') : "Loading...!"}đ </h5>
                         <span className="sale rounded fw-bold mx-2 p-1" >-{product.discount}%</span>
                     </div>
+                    <div>
+                        <div className="border w-100 my-3"></div>
+                        <form className ="DesInfo">
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label">Email</label>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        id="email"
+                                        placeholder="Nhập email muốn nhận tài khoản"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                 />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="phone" className="form-label">Số điện thoại</label>
+                                    <input
+                                        type="tel"
+                                        className="form-control"
+                                        id="phone"
+                                        placeholder="Nhập số điện thoại của bạn"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                     />
+                                 </div>                        
+                        
+                        </form>
+                    </div>
                     <div className="border w-100 my-3"></div>
                     <div>
                         <Button type="button" className="ctm-btn-3 no-hover me-2 mb-2" onClick={handleBuyNow}>
@@ -396,6 +443,7 @@ const ProductDetail = () => {
                             <FontAwesomeIcon icon={faCartShopping} /> Thêm vào giỏ Hàng
                         </Button>
                     </div>
+
                 </div>
                 <div>
                     <h5>Mã giảm giá</h5>

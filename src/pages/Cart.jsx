@@ -6,60 +6,50 @@ import { Button } from "react-bootstrap";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import api from "../api/api"
-
-
+import { useDispatch } from 'react-redux';
+import { deleteToCart } from "../redux/apiRequest";
 
 const Cart = () => {
-    // deleteCartProduct()
-    const [products, setProducts] = useState([])
     const [isVisible, setIsVisible] = useState(false);
-    const [account_balance,setAccount_balance] = useState(100000000)
-    
-    const toggleVisibility = () => {
-        setIsVisible((prev) => !prev); // Đảo ngược trạng thái
-    };
+    const [account_balance,setAccount_balance] = useState(1000000000)
+    const [products, setProducts] = useState(null)
     const user = useSelector((state => state.auth.login.currentUser))
-
-    useEffect(() => {
-        api.get('/cart')
-            .then(res=>setProducts(res.data))
-            .catch(err => console.error("Loi !!!!",err))
-
-    }, []);
-    console.log(products)
- 
-    const deleteProduct = async (productId) => {
-        try {
-            const response = await fetch(`http://localhost:5000/cart/${productId}`, {
-                method: 'DELETE',
-            });
-    
-            if (!response.ok) {
-                throw new Error(`Lỗi khi xóa sản phẩm: ${response.statusText}`);
-            }
-    
-            // Cập nhật state, loại bỏ sản phẩm đã xóa
-            setProducts((prevProducts) => prevProducts.filter(product => product.id !== productId));
-            console.log(`Sản phẩm với ID ${productId} đã bị xóa.`);
-        } catch (error) {
-            console.error('Lỗi:', error);
+    const dispatch = useDispatch(); // 
+    // useEffect(()=>{
+    //     api.get(`/v1/cart/${user._id}`)
+    //         .then((res)=>{  
+    //             setProducts(res.data)
+    //         })
+    //         .catch(err => console.error("Da co loi: ",err))
+    //     },[user._id])
+        useEffect(() => {
+        if (user && user._id) {
+            fetchCartData();
         }
+    }, [user._id]);
+    
+    // Hàm fetch dữ liệu giỏ hàng
+    const fetchCartData = () => {
+        api.get(`/v1/cart/${user._id}`)
+            .then((res) => {  
+                setProducts(res.data);
+            })
+            .catch(err => console.error("Đã có lỗi: ", err));
     };
-   
+    const items = products?.items.map(item => item.product_id)
+    
+    
     const handlePrice = () => {
         let price = 0;
-        for (let i = 0; i < products.length; i++) {
-            price += products[i].price;
+        for (let i = 0; i < items?.length; i++) {
+            price += items[i].price;
         }
 
         return price;
 
     }
-    handlePrice()
-    const showQr = () => {
-        setIsVisible((prev) => !prev); //
-    }
-    const ammountAdded = () => {
+
+        const ammountAdded = () => {
         let amountAdd
         if (account_balance >= handlePrice()) {
             amountAdd = 0;
@@ -69,11 +59,8 @@ const Cart = () => {
             return amountAdd
         }
     }
-    useEffect(() => {
-        ammountAdded()
-    }, [account_balance])
-
-    const handleBuyNow = (amountAdd) => {
+      
+        const handleBuyNow = (amountAdd) => {
         
         if(account_balance>=amountAdd){
             alert("Thanh toan thanh cong, xin doi he thong xu ly")
@@ -84,33 +71,49 @@ const Cart = () => {
             alert("So du khong du!!! Vui long nap them tien")
         }
     }
+        const showQr = () => {
+        setIsVisible((prev) => !prev); //
+    }
 
-
-    return (
-        <div className="my-5">
+  const handleRemoveCart = (productId) => {
+    const data = {
+      user_id: user._id,
+      product_id: productId
+    };
+    console.log(data)
+    deleteToCart(data, dispatch)
+                .then(() => {
+            // Đợi một chút để đảm bảo server đã xử lý xong
+             setTimeout(() => {
+                fetchCartData(); // Cập nhật lại giỏ hàng
+            }, 300);
+        })
+        .catch(error => {
+            console.error("Lỗi khi xóa sản phẩm:", error);
+        });
+  };
+    return(
+         <div className="my-5">
             <Container>
-
                 <div className='bg-white bg-white p-4 rounded d-flex w-100  '>
-                    <div style={{ minWidth: "75%" }}>
-                        {products.map((product) => {
+                    <div style={{ minWidth: "75%" }}> 
+                        <h3 className = 'f-bold'>Giỏ Hàng</h3>
+                        {items?.map((item) => {
                             return (
-                                <div className="d-flex border p-4 rounded my-3 position-relative" key={product.id} style={{ maxWidth: "1000px" }}>
+                                <div className="d-flex border p-4 rounded my-3 position-relative" key={item.id} style={{ maxWidth: "1000px" }}>
                                     <div className="mx-3">
-                                        <img className="ct-img" src={product.src} alt="" />
+                                        <img className="ct-img" src={item.src} alt="" />
                                     </div>
                                     <div className="d-flex justify-content-center">
-                                        <p className="fw-bold">{product.name}</p>
-                                        <QuantitySelector price={product.price.toLocaleString('vi-VN')}
-                                            sale={product.original_price.toLocaleString('vi-VN')}
-                                            discount={product.discount}
+                                        <p className="fw-bold">{item.name}</p>
+                                        <QuantitySelector price={item.price.toLocaleString('vi-VN')}
+                                            sale={item.original_price.toLocaleString('vi-VN')}
+                                            discount={item.discount}
 
                                         />
                                     </div>
                                     <Button variant="outline-danger"
-                                        onClick={() => {
-                                            deleteProduct(product.id)
-                                            console.log(typeof product.id)
-                                        }}
+                                        onClick={()=>  handleRemoveCart(item._id)}
                                         className="position-absolute"
                                         style={{ bottom: '10px', right: '10px' }}>
                                         <FontAwesomeIcon icon={faTrash} />
@@ -147,7 +150,7 @@ const Cart = () => {
                         <div className="text-center">Quét mã thanh toán không cần nạp</div>
                         <Button onClick={showQr} style={{ width: "100%", marginBottom: "15px", backgroundColor: ' #005BAA' }}>Mua siêu tốc qua Mobile Banking</Button>
                         <Button onClick={()=> handleBuyNow(handlePrice())} style={{ width: "100%", backgroundColor: ' #AE2070' }}>Mua ngay</Button>
-                        <img style={{ display: isVisible ? "block" : "none", width: '100%' }}
+                        <img style={{ display: isVisible ? "block" : "none", width: '100%' }} alt = "Đây là mã qr"
                             src={`https://img.vietqr.io/image/mbbank-0352290387-compact2.jpg?amount=${handlePrice()}&addInfo=dong%20gop%20quy%20vac%20xin&accountName=nguyen%20tien%20dat%20`} />
                     </div>
 
@@ -156,10 +159,7 @@ const Cart = () => {
             </Container>
         </div>
 
-
-
-
-
     )
 }
+    
 export default Cart

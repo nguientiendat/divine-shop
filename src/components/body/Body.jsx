@@ -68,8 +68,7 @@ function Body() {
                                     <img
                                         className="d-block w-100 p-0  rounded"
                                         src={image.src}
-
-                                    />
+                                        />
                                 </Carousel.Item>
                             ))}
                         </Carousel>

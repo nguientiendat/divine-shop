@@ -61,3 +61,58 @@ exports.addItem = async (req, res) => {
         res.status(500).json({ err: err.message });
     }
 }
+exports.getItem = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const cart = await Cart.findOne({ user_id: userId }).populate('items.product_id');
+
+        if (!cart) {
+            return res.status(404).json({ error: "Không tìm thấy giỏ hàng" });
+        }
+
+        res.status(200).json(cart);
+    } catch (err) {
+        console.error("Lỗi khi lấy giỏ hàng:", err);
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.removeItem = async (req, res) => {
+    const { userId, productId: product_id } = req.params;
+    // const {  } = req.params;
+
+    console.log("➡️ Params:", req.params);
+    console.log(product_id)
+    console.log(userId)
+    try {
+        const cart = await Cart.findOne({ user_id: userId });
+        
+        if (!cart) {
+            console.log("❌ Không tìm thấy giỏ hàng!");
+            return res.status(404).json({ error: "Không tìm thấy giỏ hàng" });
+        }
+        // In ra trước khi lọc
+        console.log("🛒 Trước khi xóa:", cart.items);
+
+        const initialLength = cart.items.length;
+        console.log("Tong so san pham trong gio hang: ",initialLength)
+        // Xoá item có product_id
+        cart.items = cart.items.filter(item => item.product_id.toString() !== product_id);
+
+        // Kiểm tra có thực sự xóa gì không
+        if (cart.items.length === initialLength) {
+            console.log("⚠️ Không có sản phẩm nào bị xóa (không tìm thấy product_id phù hợp)");
+            return res.status(400).json({ error: "Không tìm thấy sản phẩm trong giỏ hàng để xóa" });
+        }
+
+        await cart.save();
+
+        console.log("✅ Đã xóa xong. Sau khi xóa:", cart.items);
+        return res.status(200).json({ message: "Đã xóa sản phẩm khỏi giỏ hàng", cart });
+
+    } catch (err) {
+        console.error("💥 Lỗi khi xóa sản phẩm:", err);
+        return res.status(500).json({ error: "Đã có lỗi xảy ra trên server" });
+    }
+};

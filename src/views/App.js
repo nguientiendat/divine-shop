@@ -11,7 +11,18 @@ import PageAdmin from "../pages/PageAdmin";
 import TestA from "../pages/TestA"
 import "../styles/style.css"
 import Trending from "../pages/Trending";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../redux/authSlice";
 function App() {
+const dispatch = useDispatch();
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            dispatch(loginSuccess(JSON.parse(storedUser))); // đồng bộ lại user vào Redux store
+        }
+    }, []);
   return (
   <Routes>
     <Route path ='/' element = {<Layout/>} >
