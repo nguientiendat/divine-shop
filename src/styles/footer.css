@@ -1,0 +1,14 @@
+.brand-logo{
+    min-height: 24px;
+    max-height: 25px;
+}
+.brand{
+    width:auto !important
+}
+.bgr-row1{
+    background-color: white;
+}
+.linkfooter{
+    text-decoration: none;
+    color:black
+}

@@ -83,7 +83,10 @@ function SHeader() {
                                             <Dropdown.Item as={Link} to="/favorite-products">
                                                 Sản phẩm yêu thích
                                             </Dropdown.Item>
-                                            <Dropdown.Item as={Link} to="/logout">
+                                            <Dropdown.Item  onClick={() => {
+                                                localStorage.clear(); // hoặc removeItem("token") nếu bạn chỉ lưu token
+                                                window.location.href = "/"; // hoặc dùng navigate nếu đang trong component
+                                            }} >
                                                 Đăng xuất
                                             </Dropdown.Item>
                                             {checkAccount() ? (<>

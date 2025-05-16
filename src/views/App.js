@@ -14,6 +14,7 @@ import Trending from "../pages/Trending";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/authSlice";
+
 function App() {
 const dispatch = useDispatch();
 

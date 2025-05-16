@@ -42,7 +42,7 @@ function Body() {
 
 
     return (
-        <div className="my-3 w-100">
+        <div className="mt-3 w-100">
             <Container>
                 <Row >
                     <Col className="mx-2 set-bg-3 rounded">
