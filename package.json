@@ -32,8 +32,8 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "concurrently \"npm run react\" \"npm run json\" \"npm run server\" ",
-    "react": "react-scripts start",
+    "start": "npm run react --host",
+    "react": "react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

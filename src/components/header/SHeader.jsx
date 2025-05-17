@@ -80,6 +80,9 @@ function SHeader() {
                                             <Dropdown.Item as={Link} to="/order-history">
                                                 Lịch sử đơn hàng
                                             </Dropdown.Item>
+                                            <Dropdown.Item as={Link} to="/product-manage">
+                                                Quản lý sản phẩm
+                                            </Dropdown.Item>
                                             <Dropdown.Item as={Link} to="/favorite-products">
                                                 Sản phẩm yêu thích
                                             </Dropdown.Item>

@@ -57,7 +57,17 @@ export const addToCart = async (data, dispatch)=>{
         dispatch(addProductFailed())
     }
 }
+export const deleteProduct = async (data, dispatch)=> {
+    dispatch(deleteProductStart())
 
+    try{
+        const res = await axios.delete(`http://localhost:8000/v1/product/${data.product_id}`)
+    
+        dispatch(deleteProductSuccess(res.data))
+    }catch(err){
+        console.log(deleteProductFailed())
+    }
+}
 
 export const deleteToCart = async (data, dispatch) => {
   dispatch(deleteProductStart());

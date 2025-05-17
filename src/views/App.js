@@ -14,7 +14,7 @@ import Trending from "../pages/Trending";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/authSlice";
-
+import ProductManage from "../pages/ProductManage";
 function App() {
 const dispatch = useDispatch();
 
@@ -35,6 +35,9 @@ const dispatch = useDispatch();
       <Route path = "/pageadmin" element = {<PageAdmin />} />
       <Route path = "/test" element = {<TestA />} />
       <Route path = "/trending" element = {<Trending />} />
+      <Route path = "/product-manage" element = {<ProductManage />} />
+      
+
 
 
 
