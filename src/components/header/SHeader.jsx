@@ -18,7 +18,7 @@ function SHeader() {
     const checkAccount = () => {
         let account;
         if (user != null) {
-            if (user.admin === true) {
+            if (user.role === 'ADMIN') {
                 account = user.admin
                 alert('You are admin')
                 return account
@@ -45,7 +45,7 @@ function SHeader() {
                         <div className="fheader d-flex justify-content-between py-1">
                             <div className="logo">
                                 <Link to="" className="tw fs-2 fw-semibold">
-                                 <img loading="lazy" src="https://cdn.divineshop.vn/static/b1402e84a947ed36cebe9799e47f61c2.svg" className="logo-img" alt="Divine Shop"></img>DivineShop</Link>
+                                    <img loading="lazy" src="https://cdn.divineshop.vn/static/b1402e84a947ed36cebe9799e47f61c2.svg" className="logo-img" alt="Divine Shop"></img>DivineShop</Link>
                             </div>
                             <div className="search mx-5">
                                 <Row>
@@ -86,7 +86,7 @@ function SHeader() {
                                             <Dropdown.Item as={Link} to="/favorite-products">
                                                 Sản phẩm yêu thích
                                             </Dropdown.Item>
-                                            <Dropdown.Item  onClick={() => {
+                                            <Dropdown.Item onClick={() => {
                                                 localStorage.clear(); // hoặc removeItem("token") nếu bạn chỉ lưu token
                                                 window.location.href = "/"; // hoặc dùng navigate nếu đang trong component
                                             }} >
@@ -96,7 +96,7 @@ function SHeader() {
                                                 <Dropdown.Item as={Link} to="/pageadmin">
                                                     Quản lý
                                                 </Dropdown.Item></>) : (<div></div>)}
-                                                
+
 
                                         </Dropdown.Menu>
                                     </Dropdown>
@@ -106,8 +106,8 @@ function SHeader() {
                                     <Link to="/register" className="tw fw-semibold">Đăng ký</Link>
                                 </>)}
                             </div>
-                            <div className = "">
-                             <CartShopping />
+                            <div className="">
+                                <CartShopping />
                             </div>
                         </div>
 

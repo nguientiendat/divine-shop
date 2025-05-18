@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./views/App.js";
@@ -7,7 +6,6 @@ import { BrowserRouter } from "react-router";
 import "./styles/header.css";
 import "./styles/body.css";
 import "./styles/footer.css"
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "react-redux";
 import store from "./redux/store.js";
 

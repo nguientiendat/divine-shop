@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { loginUser } from '../redux/apiRequest';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 function LogIn() {
-    const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const dispatch = useDispatch();
     const navigate = useNavigate()
@@ -12,7 +12,7 @@ function LogIn() {
     const handleLogin = (e) => {
         e.preventDefault();
         const newUser = {
-            username: username,
+            email: email,
             password: password
         };
         loginUser(newUser, dispatch, navigate)
@@ -30,7 +30,7 @@ function LogIn() {
                         <Form.Group className="mb-3" controlId="formBasicUsername">
                             <Form.Label>Tài khoản</Form.Label>
                             <Form.Control type="user" placeholder="Nhập tài khoản" className="ct"
-                                onChange={(e) => setUsername(e.target.value)} />
+                                onChange={(e) => setEmail(e.target.value)} />
                         </Form.Group>
 
                         {/* Input mật khẩu */}
@@ -41,7 +41,7 @@ function LogIn() {
                             />
                         </Form.Group>
 
-                        
+
 
                         <Button variant="primary" type="submit">
                             Đăng nhập

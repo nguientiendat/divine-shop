@@ -27,6 +27,7 @@
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.3.1",
+    "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router": "^7.1.1",
     "react-scripts": "5.0.1"
@@ -38,7 +39,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "json": "json-server --watch testdb.json --port 5000 ",
-    "server":"node backend/server.js"
+    "server": "node backend/server.js"
   },
   "eslintConfig": {
     "extends": [

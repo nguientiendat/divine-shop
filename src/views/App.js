@@ -8,7 +8,6 @@ import LogIn from "../pages/LogIn";
 import Register from "../pages/Register";
 import Cart from "../pages/Cart";
 import PageAdmin from "../pages/PageAdmin";
-import TestA from "../pages/TestA"
 import "../styles/style.css"
 import Trending from "../pages/Trending";
 import { useEffect } from "react";
@@ -33,7 +32,6 @@ const dispatch = useDispatch();
       <Route path = "/register" element = {<Register />} />
       <Route path = "/cart" element = {<Cart />} />
       <Route path = "/pageadmin" element = {<PageAdmin />} />
-      <Route path = "/test" element = {<TestA />} />
       <Route path = "/trending" element = {<Trending />} />
       <Route path = "/product-manage" element = {<ProductManage />} />
       
