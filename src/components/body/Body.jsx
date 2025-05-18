@@ -21,7 +21,7 @@ function Body() {
 
     // Hàm getData để gọi API
     const getData = async () => {
-        const url = "http://localhost:8000/v1/category";
+        const url = "http://localhost:5000/slideShow";
         try {
             const response = await fetch(url);
             if (!response.ok) {
@@ -68,7 +68,7 @@ function Body() {
                                     <img
                                         className="d-block w-100 p-0  rounded"
                                         src={image.src}
-                                        />
+                                    />
                                 </Carousel.Item>
                             ))}
                         </Carousel>
@@ -94,8 +94,8 @@ function Body() {
                     </Col>
                 </Row>
             </Container>
-            <Option name="Học tập" value_id="1000" value ="b"/>
-            <Option name="Giải trí" value_id="2000" value = "b" />
+            <Option name="Học tập" value ="b" categoryId = "3555c614-4c42-4889-8302-f5c1a1d8cffb"/>
+            <Option name="Giải trí"  value = "b" categoryId="20aefc93-c4f8-4bb3-a8b4-391bdf9b7091" />
             <div className = "test-bgr ">
                 <div className = "my-3 position-relative ">
                     <div className = "border w-25 rounded-pill d-flex position-absolute spbanchay ">

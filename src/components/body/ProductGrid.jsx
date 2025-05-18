@@ -1,41 +1,46 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Row, Col } from 'react-bootstrap';
-import Items from './Items'
+import Items from './Items';
 
-const ProductGrid = ({ products, value }) => {
-    // Chia mảng sản phẩm thành các nhóm 4 sản phẩm
-    const chunkArray = (arr, size) => {
-        const result = [];
-        for (let i = 0; i < arr.length; i += size) {
-            result.push(arr.slice(i, i + size));
-        }
-        return result;
-
-    };
+const ProductGrid = ({ products = [], value, categoryId }) => {
+  // Sử dụng useMemo để tối ưu hiệu suất, chỉ tính toán lại khi products hoặc categoryId thay đổi
+  const productRows = useMemo(() => {
+    // Lọc products theo categoryId
+    const filteredProducts = categoryId 
+      ? products.filter(product => product.category?.id === categoryId)
+      : products;
     
-    const productChunks = chunkArray(products, 4); // Chia thành từng nhóm 4
+    // Phân chia thành các hàng, mỗi hàng có tối đa 4 sản phẩm
+    const rows = [];
+    for (let i = 0; i < filteredProducts.length; i += 4) {
+      rows.push(filteredProducts.slice(i, i + 4));
+    }
+    return rows;
+  }, [products, categoryId]);
+  // Nếu không có sản phẩm nào sau khi lọc
+  if (productRows.length === 0) {
+    return <div className="text-center py-4">Không có sản phẩm nào trong danh mục này</div>;
+  }
 
-    return (
-        <div>
-            {productChunks.map((chunk, rowIndex) => (
-                <Row key={rowIndex} className="my-3">
-                    {chunk.map((product, colIndex) => (
-                        <Col key={colIndex} >
-                            <Items
-                                id={product._id}
-                                src={product.src}
-                                name={product.name}
-                                price={product.price.toLocaleString('vi-VN')}
-                                original_price={product.original_price}
-                                discount={product.discount}
-                                value = {value}
-                            />
-                        </Col>
-                    ))}
-                </Row>
-            ))}
-        </div>
-    );
+  return (
+    <div>
+      {productRows.map((row, rowIndex) => (
+        <Row key={`row-${rowIndex}`} className="my-3">
+          {row.map((product) => (
+            <Col key={`product-${product.id}`} xs={12} sm={6} md={3}>
+              <Items
+                id={product.id}
+                src={product.avatarUrl}
+                name={product.name}
+                price={product.price?.toLocaleString('vi-VN') || '0'}
+                value={value}
+              />
+            </Col>
+          ))}
+        </Row>
+      ))}
+    </div>
+  );
 };
 
 export default ProductGrid;

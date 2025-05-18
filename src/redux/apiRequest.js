@@ -16,11 +16,10 @@ export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
 
     try {
-        const res = await axios.post("http://localhost:8000/v1/auth/login", user);
+        const res = await axios.post("http://localhost:8080/auth/login", user);
 
         dispatch(loginSuccess(res.data));
 
-        // ✅ Lưu user vào localStorage để giữ trạng thái khi F5
         localStorage.setItem("user", JSON.stringify(res.data));
 
         navigate("/");

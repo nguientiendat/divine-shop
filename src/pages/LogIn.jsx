@@ -3,53 +3,79 @@ import { Form, Button, Container } from 'react-bootstrap';
 import { loginUser } from '../redux/apiRequest';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
+
 function LogIn() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
     const dispatch = useDispatch();
     const navigate = useNavigate()
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        const newUser = {
-            username: username,
+        setErrorMessage(""); // Reset thông báo lỗi
+        
+        const user = {
+            email: username, // Sử dụng giá trị từ state username, nhưng với key là email
             password: password
         };
-        loginUser(newUser, dispatch, navigate)
-    }
-
+        
+        try {
+            await loginUser(user, dispatch, navigate);
+        } catch (error) {
+            if (error.response && error.response.data) {
+                setErrorMessage(error.response.data.message || "Đăng nhập thất bại");
+            } else {
+                setErrorMessage("Đăng nhập thất bại. Vui lòng thử lại.");
+            }
+        }
+    };
 
     return (
-        <div className="my-5  ">
+        <div className="my-5">
             <Container>
-
-                <div className="mx-5 ct-w p-4 rounded ct ">
+                <div className="mx-5 ct-w p-4 rounded ct">
                     <h2 className="fw-bold my-4">Đăng Nhập</h2>
+                    
+                    {errorMessage && (
+                        <div className="alert alert-danger" role="alert">
+                            {errorMessage}
+                        </div>
+                    )}
+                    
                     <Form onSubmit={handleLogin}>
                         {/* Input tài khoản */}
                         <Form.Group className="mb-3" controlId="formBasicUsername">
-                            <Form.Label>Tài khoản</Form.Label>
-                            <Form.Control type="user" placeholder="Nhập tài khoản" className="ct"
-                                onChange={(e) => setUsername(e.target.value)} />
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control 
+                                type="email" 
+                                placeholder="Nhập email" 
+                                className="ct"
+                                onChange={(e) => setUsername(e.target.value)} 
+                                required
+                            />
                         </Form.Group>
 
                         {/* Input mật khẩu */}
                         <Form.Group className="mb-3" controlId="formBasicPassword">
                             <Form.Label>Mật khẩu</Form.Label>
-                            <Form.Control type="password" placeholder="Nhập mật khẩu" className="ct"
+                            <Form.Control 
+                                type="password" 
+                                placeholder="Nhập mật khẩu" 
+                                className="ct"
                                 onChange={(e) => setPassword(e.target.value)}
+                                required
                             />
+                            <Form.Text className="text-muted">
+                                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ cái, số và ký tự đặc biệt.
+                            </Form.Text>
                         </Form.Group>
-
-                        
 
                         <Button variant="primary" type="submit">
                             Đăng nhập
                         </Button>
                     </Form>
-
                 </div>
-
             </Container>
         </div>
     )

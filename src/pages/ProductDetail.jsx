@@ -62,12 +62,12 @@ const ProductDetail = () => {
     useEffect(() => {
     setLoading(true);
     setError(null);
-
-    api.get(`/v1/product/${id}`)
+    console.log(user)
+    api.get(`/api/products/${id}`)
         .then((response) => {
             const data = response.data;
             setProduct(data);
-
+            console.log(data)
             // Nếu sản phẩm có mô tả, hiển thị trong editor
             if (data.description) {
                 try {
@@ -105,8 +105,8 @@ const ProductDetail = () => {
     }
     setError("");
         const data = {
-            user_id : user._id,
-            product_id: product._id,
+            user_id : user.id,
+            product_id: product.id,
             name: product.name,
             price: product.price,
             original_price: product.original_price,
@@ -149,7 +149,7 @@ const ProductDetail = () => {
 
     // Lấy danh sách sản phẩm để hiển thị sản phẩm liên quan
     useEffect(() => {
-        fetch(`http://localhost:8000/v1/product`)
+        fetch(`http://localhost:8080/api/products`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Không thể tải danh sách sản phẩm");
@@ -389,19 +389,19 @@ const ProductDetail = () => {
             </Container>
         );
     }
-
+    
     return (
         <Container>
             <div className="d-flex my-4 py-3 b bg-white justify-content-between flex-wrap">
                 <div className="mb-3 mb-md-0">
-                    <img className="ct-img2 rounded" src={product.src} alt={product.name} />
+                    <img className="ct-img2 rounded" src={product.result.avatarUrl} alt={product.name} />
                 </div>
                 <div className="px-4 mb-3 mb-md-0">
                     <p className="m-0">Sản phẩm</p>
-                    <h3>{product.name}</h3>
-                    <p> <FontAwesomeIcon icon={faBox} /> Tình trạng: <span className='ct-color-green'>{product.status}</span></p>
+                    <h3>{product.result.name}</h3>
+                    <p> <FontAwesomeIcon icon={faBox} /> Tình trạng: <span className='ct-color-green'>{product.result.status}</span></p>
                     <p><FontAwesomeIcon icon={faTag} /> Thể loại: App, Giải trí, Game</p>
-                    <h4>{product.price? product.price.toLocaleString('vi-VN') : "Loading...!"}đ</h4>
+                    <h4>{product.result.price? product.result.price.toLocaleString('vi-VN') : "Loading...!"}đ</h4>
                     <div className="d-flex align-items-center">
                         <h5 className="ct-c m-0">{product.original_price? product.original_price.toLocaleString('vi-VN') : "Loading...!"}đ </h5>
                         <span className="sale rounded fw-bold mx-2 p-1" >-{product.discount}%</span>
