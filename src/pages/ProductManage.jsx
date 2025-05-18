@@ -42,6 +42,8 @@ const ProductManage = () => {
         }))
         setEditing(null)
     }
+    
+    
 
     return (
         <Container>
