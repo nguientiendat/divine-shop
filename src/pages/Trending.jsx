@@ -5,12 +5,13 @@ import Items from "../components/body/Items"
 const Trending = ()=>{
     const [Products,setProducts] = useState([])
    useEffect(()=>{
-        api.get('/v1/product')
+        api.get('/api/products')
             .then(res => setProducts(res.data))
             .catch(err => console.error("Loi !!!!",err))
 
    },[]);
-   console.log(Products)
+   const products = Products.content
+
     return(
         <div className = "my-3">
             <Container>
@@ -19,12 +20,12 @@ const Trending = ()=>{
                 </div>
                 <div>
                     <Row>
-                        {Products.map((product)=>{
+                        {products?.map((product)=>{
                            return(
                            <Col lg="3" className = "mb-4">
                              <Items 
                                 id={product.id}
-                                src={product.src}
+                                src={product.avatarUrl}
                                 name={product.name}
                                 price={product.price ? product.price.toLocaleString('vi-VN') : "Loading...!"}
                                 original_price={product.original_price}

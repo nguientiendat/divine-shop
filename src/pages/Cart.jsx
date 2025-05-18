@@ -12,32 +12,26 @@ import { deleteToCart } from "../redux/apiRequest";
 const Cart = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [account_balance,setAccount_balance] = useState(1000000000)
-    const [products, setProducts] = useState(null)
-    const user = useSelector((state => state.auth.login.currentUser))
+    const [Products, setProducts] = useState(null)
     const dispatch = useDispatch(); // 
-    // useEffect(()=>{
-    //     api.get(`/v1/cart/${user._id}`)
-    //         .then((res)=>{  
-    //             setProducts(res.data)
-    //         })
-    //         .catch(err => console.error("Da co loi: ",err))
-    //     },[user._id])
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const user_id = userData?.result?.user_id;
+    const accessToken = userData?.result?.accessToken
+    console.log(accessToken)
         useEffect(() => {
-        if (user && user._id) {
-            fetchCartData();
-        }
-    }, [user._id]);
-    
-    // Hàm fetch dữ liệu giỏ hàng
-    const fetchCartData = () => {
-        api.get(`/v1/cart/${user._id}`)
+             api.get(`/api/cart/user/${user_id}`,{
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+             })
             .then((res) => {  
                 setProducts(res.data);
             })
             .catch(err => console.error("Đã có lỗi: ", err));
-    };
-    const items = products?.items.map(item => item.product_id)
+    }, []);
     
+    const items = Products?.result.items
+        
     
     const handlePrice = () => {
         let price = 0;
@@ -77,7 +71,7 @@ const Cart = () => {
 
   const handleRemoveCart = (productId) => {
     const data = {
-      user_id: user._id,
+      user_id: user_id,
       product_id: productId
     };
     console.log(data)
@@ -85,7 +79,7 @@ const Cart = () => {
                 .then(() => {
             // Đợi một chút để đảm bảo server đã xử lý xong
              setTimeout(() => {
-                fetchCartData(); // Cập nhật lại giỏ hàng
+                ; // Cập nhật lại giỏ hàng
             }, 300);
         })
         .catch(error => {
@@ -102,13 +96,13 @@ const Cart = () => {
                             return (
                                 <div className="d-flex border p-4 rounded my-3 position-relative" key={item.id} style={{ maxWidth: "1000px" }}>
                                     <div className="mx-3">
-                                        <img className="ct-img" src={item.src} alt="" />
+                                        <img className="ct-img" src={item.product.avatarUrl} alt="" />
                                     </div>
                                     <div className="d-flex justify-content-center">
-                                        <p className="fw-bold">{item.name}</p>
-                                        <QuantitySelector price={item.price.toLocaleString('vi-VN')}
-                                            sale={item.original_price.toLocaleString('vi-VN')}
-                                            discount={item.discount}
+                                        <p className="fw-bold">{item.product.name}</p>
+                                        <QuantitySelector price={item.product.price? item.product.price.toLocaleString('vi-VN'):"loading...."}
+                                            // sale={item.original_price.toLocaleString('vi-VN')}
+                                            discount={item.product.discount}
 
                                         />
                                     </div>

@@ -1,0 +1,598 @@
+From e3dc3f1e4b096b70caa6c4c4ca540e9cff2f9283 Mon Sep 17 00:00:00 2001
+From: nguientiendat <git75749@gmail.com>
+Date: Mon, 19 May 2025 01:18:03 +0700
+Subject: [PATCH] =?UTF-8?q?WIP:=20l=C6=B0u=20thay=20=C4=91=E1=BB=95i=20t?=
+ =?UTF-8?q?=E1=BA=A1m=20th=E1=BB=9Di=20tr=C6=B0=E1=BB=9Bc=20khi=20checkout?=
+ =?UTF-8?q?=20branch=20kh=C3=A1c?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ src/api/api.js                      |   2 +-
+ src/components/body/Body.jsx        |   8 +-
+ src/components/body/Option.jsx      |  36 ++------
+ src/components/body/ProductGrid.jsx |  75 ++++++++--------
+ src/datas/slideShow.json            |  11 +++
+ src/pages/LogIn.jsx                 |  60 +++++++++----
+ src/pages/ProductDetail.jsx         |  22 ++---
+ src/pages/ProductManage.jsx         | 134 +++++++++++++++-------------
+ src/redux/apiRequest.js             |   3 +-
+ 9 files changed, 188 insertions(+), 163 deletions(-)
+ create mode 100644 src/datas/slideShow.json
+
+diff --git a/src/api/api.js b/src/api/api.js
+index a70a6a6..db50daf 100644
+--- a/src/api/api.js
++++ b/src/api/api.js
+@@ -1,7 +1,7 @@
+ import axios from "axios";
+ 
+ const api = axios.create({
+-    baseURL: 'http://localhost:8000',  // Sử dụng URL backend của bạn
++    baseURL: 'http://localhost:8080',  // Sử dụng URL backend của bạn
+     headers: {
+         'Content-Type': 'application/json',
+     },
+diff --git a/src/components/body/Body.jsx b/src/components/body/Body.jsx
+index c4ac356..bdfc574 100644
+--- a/src/components/body/Body.jsx
++++ b/src/components/body/Body.jsx
+@@ -21,7 +21,7 @@ function Body() {
+ 
+     // Hàm getData để gọi API
+     const getData = async () => {
+-        const url = "http://localhost:8000/v1/category";
++        const url = "http://localhost:5000/slideShow";
+         try {
+             const response = await fetch(url);
+             if (!response.ok) {
+@@ -68,7 +68,7 @@ function Body() {
+                                     <img
+                                         className="d-block w-100 p-0  rounded"
+                                         src={image.src}
+-                                        />
++                                    />
+                                 </Carousel.Item>
+                             ))}
+                         </Carousel>
+@@ -94,8 +94,8 @@ function Body() {
+                     </Col>
+                 </Row>
+             </Container>
+-            <Option name="Học tập" value_id="1000" value ="b"/>
+-            <Option name="Giải trí" value_id="2000" value = "b" />
++            <Option name="Học tập" value ="b" categoryId = "3555c614-4c42-4889-8302-f5c1a1d8cffb"/>
++            <Option name="Giải trí"  value = "b" categoryId="20aefc93-c4f8-4bb3-a8b4-391bdf9b7091" />
+             <div className = "test-bgr ">
+                 <div className = "my-3 position-relative ">
+                     <div className = "border w-25 rounded-pill d-flex position-absolute spbanchay ">
+diff --git a/src/components/body/Option.jsx b/src/components/body/Option.jsx
+index 23f90cf..68d2430 100644
+--- a/src/components/body/Option.jsx
++++ b/src/components/body/Option.jsx
+@@ -6,39 +6,17 @@ import { useState, useEffect } from 'react';
+ import ProductGrid from './ProductGrid';
+ import { Link } from 'react-router';
+ import api from '../../api/api';
+-function Option({value_id, name, value}) {
+-
+-// const [products, setProducts] = useState([]);
+-
+-//  const getData = () => {
+-//     api.get(`http://localhost:5000/product`, {
+-//         params: {
+-//             category_id: value_id
+-//         }
+-//     })
+-//     .then((response) => {
+-//         // console.log(response.data)
+-//         setProducts(response.data);
+-    
+-//     })
+-//     .catch((error) => {
+-//         console.error("Lỗi khi lấy danh sách sản phẩm:", error);
+-//     });
+-// }
++function Option({ name, value, categoryId}) {
+ 
+ 
+ const [products, setProducts] = useState([]);
+-
+  const getData = () => {
+-    api.get(`/v1/product`, {
+-        params: {
+-            category_id: value_id
+-        }
+-    })
++    api.get(`/api/products`)
+     .then((response) => {
+-        // console.log(response.data)
++        
+         setProducts(response.data);
+-    
++  console.log(response.data)
++
+     })
+     .catch((error) => {
+         console.error("Lỗi khi lấy danh sách sản phẩm:", error);
+@@ -46,12 +24,10 @@ const [products, setProducts] = useState([]);
+ }
+ 
+ 
+-
+ useEffect(() => {
+     getData();
+ }, []);
+ 
+-// console.log(products)
+     return (
+         <Container className="text-align-center py-2 my-2 ">
+             <div className="name-option d-flex justify-content-between">
+@@ -67,7 +43,7 @@ useEffect(() => {
+ 
+             </div>
+             <Row className="my-3 ">
+-                <ProductGrid products={products} value ={value} />
++                <ProductGrid products={products.content} value ={value} categoryId={categoryId} />
+ 
+             </Row>
+         </Container>
+diff --git a/src/components/body/ProductGrid.jsx b/src/components/body/ProductGrid.jsx
+index 90d0571..ba01f1f 100644
+--- a/src/components/body/ProductGrid.jsx
++++ b/src/components/body/ProductGrid.jsx
+@@ -1,41 +1,46 @@
+-import React from 'react';
++import React, { useMemo } from 'react';
+ import { Row, Col } from 'react-bootstrap';
+-import Items from './Items'
++import Items from './Items';
+ 
+-const ProductGrid = ({ products, value }) => {
+-    // Chia mảng sản phẩm thành các nhóm 4 sản phẩm
+-    const chunkArray = (arr, size) => {
+-        const result = [];
+-        for (let i = 0; i < arr.length; i += size) {
+-            result.push(arr.slice(i, i + size));
+-        }
+-        return result;
+-
+-    };
++const ProductGrid = ({ products = [], value, categoryId }) => {
++  // Sử dụng useMemo để tối ưu hiệu suất, chỉ tính toán lại khi products hoặc categoryId thay đổi
++  const productRows = useMemo(() => {
++    // Lọc products theo categoryId
++    const filteredProducts = categoryId 
++      ? products.filter(product => product.category?.id === categoryId)
++      : products;
+     
+-    const productChunks = chunkArray(products, 4); // Chia thành từng nhóm 4
++    // Phân chia thành các hàng, mỗi hàng có tối đa 4 sản phẩm
++    const rows = [];
++    for (let i = 0; i < filteredProducts.length; i += 4) {
++      rows.push(filteredProducts.slice(i, i + 4));
++    }
++    return rows;
++  }, [products, categoryId]);
++  // Nếu không có sản phẩm nào sau khi lọc
++  if (productRows.length === 0) {
++    return <div className="text-center py-4">Không có sản phẩm nào trong danh mục này</div>;
++  }
+ 
+-    return (
+-        <div>
+-            {productChunks.map((chunk, rowIndex) => (
+-                <Row key={rowIndex} className="my-3">
+-                    {chunk.map((product, colIndex) => (
+-                        <Col key={colIndex} >
+-                            <Items
+-                                id={product._id}
+-                                src={product.src}
+-                                name={product.name}
+-                                price={product.price.toLocaleString('vi-VN')}
+-                                original_price={product.original_price}
+-                                discount={product.discount}
+-                                value = {value}
+-                            />
+-                        </Col>
+-                    ))}
+-                </Row>
+-            ))}
+-        </div>
+-    );
++  return (
++    <div>
++      {productRows.map((row, rowIndex) => (
++        <Row key={`row-${rowIndex}`} className="my-3">
++          {row.map((product) => (
++            <Col key={`product-${product.id}`} xs={12} sm={6} md={3}>
++              <Items
++                id={product.id}
++                src={product.avatarUrl}
++                name={product.name}
++                price={product.price?.toLocaleString('vi-VN') || '0'}
++                value={value}
++              />
++            </Col>
++          ))}
++        </Row>
++      ))}
++    </div>
++  );
+ };
+ 
+-export default ProductGrid;
++export default ProductGrid;
+\ No newline at end of file
+diff --git a/src/datas/slideShow.json b/src/datas/slideShow.json
+new file mode 100644
+index 0000000..4eb7a93
+--- /dev/null
++++ b/src/datas/slideShow.json
+@@ -0,0 +1,11 @@
++{
++  "slideShow": [
++    {
++        "src":"https://cdn.divineshop.vn/image/catalog/Banner/Netflix%20banner%2025k-96766.png?hash=1734103546"
++    },
++    {
++        "src":"https://cdn.divineshop.vn/image/catalog/Anh-SP-New/Thang/ToiUuCongViec-89008.png?hash=1722222194"
++    }
++
++  ]
++}
+\ No newline at end of file
+diff --git a/src/pages/LogIn.jsx b/src/pages/LogIn.jsx
+index 924b5dd..71c9f71 100644
+--- a/src/pages/LogIn.jsx
++++ b/src/pages/LogIn.jsx
+@@ -3,53 +3,79 @@ import { Form, Button, Container } from 'react-bootstrap';
+ import { loginUser } from '../redux/apiRequest';
+ import { useDispatch } from 'react-redux';
+ import { useNavigate } from 'react-router';
++
+ function LogIn() {
+     const [username, setUsername] = useState("")
+     const [password, setPassword] = useState("")
++    const [errorMessage, setErrorMessage] = useState("")
+     const dispatch = useDispatch();
+     const navigate = useNavigate()
+ 
+-    const handleLogin = (e) => {
++    const handleLogin = async (e) => {
+         e.preventDefault();
+-        const newUser = {
+-            username: username,
++        setErrorMessage(""); // Reset thông báo lỗi
++        
++        const user = {
++            email: username, // Sử dụng giá trị từ state username, nhưng với key là email
+             password: password
+         };
+-        loginUser(newUser, dispatch, navigate)
+-    }
+-
++        
++        try {
++            await loginUser(user, dispatch, navigate);
++        } catch (error) {
++            if (error.response && error.response.data) {
++                setErrorMessage(error.response.data.message || "Đăng nhập thất bại");
++            } else {
++                setErrorMessage("Đăng nhập thất bại. Vui lòng thử lại.");
++            }
++        }
++    };
+ 
+     return (
+-        <div className="my-5  ">
++        <div className="my-5">
+             <Container>
+-
+-                <div className="mx-5 ct-w p-4 rounded ct ">
++                <div className="mx-5 ct-w p-4 rounded ct">
+                     <h2 className="fw-bold my-4">Đăng Nhập</h2>
++                    
++                    {errorMessage && (
++                        <div className="alert alert-danger" role="alert">
++                            {errorMessage}
++                        </div>
++                    )}
++                    
+                     <Form onSubmit={handleLogin}>
+                         {/* Input tài khoản */}
+                         <Form.Group className="mb-3" controlId="formBasicUsername">
+-                            <Form.Label>Tài khoản</Form.Label>
+-                            <Form.Control type="user" placeholder="Nhập tài khoản" className="ct"
+-                                onChange={(e) => setUsername(e.target.value)} />
++                            <Form.Label>Email</Form.Label>
++                            <Form.Control 
++                                type="email" 
++                                placeholder="Nhập email" 
++                                className="ct"
++                                onChange={(e) => setUsername(e.target.value)} 
++                                required
++                            />
+                         </Form.Group>
+ 
+                         {/* Input mật khẩu */}
+                         <Form.Group className="mb-3" controlId="formBasicPassword">
+                             <Form.Label>Mật khẩu</Form.Label>
+-                            <Form.Control type="password" placeholder="Nhập mật khẩu" className="ct"
++                            <Form.Control 
++                                type="password" 
++                                placeholder="Nhập mật khẩu" 
++                                className="ct"
+                                 onChange={(e) => setPassword(e.target.value)}
++                                required
+                             />
++                            <Form.Text className="text-muted">
++                                Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ cái, số và ký tự đặc biệt.
++                            </Form.Text>
+                         </Form.Group>
+ 
+-                        
+-
+                         <Button variant="primary" type="submit">
+                             Đăng nhập
+                         </Button>
+                     </Form>
+-
+                 </div>
+-
+             </Container>
+         </div>
+     )
+diff --git a/src/pages/ProductDetail.jsx b/src/pages/ProductDetail.jsx
+index 58c0945..11268e9 100644
+--- a/src/pages/ProductDetail.jsx
++++ b/src/pages/ProductDetail.jsx
+@@ -62,12 +62,12 @@ const ProductDetail = () => {
+     useEffect(() => {
+     setLoading(true);
+     setError(null);
+-
+-    api.get(`/v1/product/${id}`)
++    console.log(user)
++    api.get(`/api/products/${id}`)
+         .then((response) => {
+             const data = response.data;
+             setProduct(data);
+-
++            console.log(data)
+             // Nếu sản phẩm có mô tả, hiển thị trong editor
+             if (data.description) {
+                 try {
+@@ -105,8 +105,8 @@ const ProductDetail = () => {
+     }
+     setError("");
+         const data = {
+-            user_id : user._id,
+-            product_id: product._id,
++            user_id : user.id,
++            product_id: product.id,
+             name: product.name,
+             price: product.price,
+             original_price: product.original_price,
+@@ -149,7 +149,7 @@ const ProductDetail = () => {
+ 
+     // Lấy danh sách sản phẩm để hiển thị sản phẩm liên quan
+     useEffect(() => {
+-        fetch(`http://localhost:8000/v1/product`)
++        fetch(`http://localhost:8080/api/products`)
+             .then((response) => {
+                 if (!response.ok) {
+                     throw new Error("Không thể tải danh sách sản phẩm");
+@@ -389,19 +389,19 @@ const ProductDetail = () => {
+             </Container>
+         );
+     }
+-
++    
+     return (
+         <Container>
+             <div className="d-flex my-4 py-3 b bg-white justify-content-between flex-wrap">
+                 <div className="mb-3 mb-md-0">
+-                    <img className="ct-img2 rounded" src={product.src} alt={product.name} />
++                    <img className="ct-img2 rounded" src={product.result.avatarUrl} alt={product.name} />
+                 </div>
+                 <div className="px-4 mb-3 mb-md-0">
+                     <p className="m-0">Sản phẩm</p>
+-                    <h3>{product.name}</h3>
+-                    <p> <FontAwesomeIcon icon={faBox} /> Tình trạng: <span className='ct-color-green'>{product.status}</span></p>
++                    <h3>{product.result.name}</h3>
++                    <p> <FontAwesomeIcon icon={faBox} /> Tình trạng: <span className='ct-color-green'>{product.result.status}</span></p>
+                     <p><FontAwesomeIcon icon={faTag} /> Thể loại: App, Giải trí, Game</p>
+-                    <h4>{product.price? product.price.toLocaleString('vi-VN') : "Loading...!"}đ</h4>
++                    <h4>{product.result.price? product.result.price.toLocaleString('vi-VN') : "Loading...!"}đ</h4>
+                     <div className="d-flex align-items-center">
+                         <h5 className="ct-c m-0">{product.original_price? product.original_price.toLocaleString('vi-VN') : "Loading...!"}đ </h5>
+                         <span className="sale rounded fw-bold mx-2 p-1" >-{product.discount}%</span>
+diff --git a/src/pages/ProductManage.jsx b/src/pages/ProductManage.jsx
+index f78d71a..d7b893c 100644
+--- a/src/pages/ProductManage.jsx
++++ b/src/pages/ProductManage.jsx
+@@ -9,90 +9,98 @@ const ProductManage = () => {
+     const [products, setProducts] = useState([])
+     const [editing, setEditing] = useState(null)
+     const dispatch = useDispatch()
+-    
++
+     useEffect(() => {
+-      api.get('/v1/product')
+-          .then((res) => {
+-            setProducts(res.data)
+-          })
+-          .catch(err => console.error("Loi!!!!!", err.message))
++        api.get('/api/products')
++            .then((res) => {
++                console.log(res.data)
++                setProducts(res.data)
++            })
++            .catch(err => console.error("Lỗi khi load sản phẩm:", err.message))
+     }, [])
+-    
++
++    const items = products?.content || []
++
+     const handleDeleteProduct = (product_id) => {
+-        const data = {
+-            product_id: product_id
+-        }
++        const data = { product_id }
+         deleteProduct(data, dispatch)
++            .then(() => {
++                setProducts(prev => ({
++                    ...prev,
++                    content: prev.content.filter(item => item.id !== product_id)
++                }))
++            })
+             .catch(error => {
+-                console.error("Loi!!!!!", error)
++                console.error("Lỗi khi xóa sản phẩm:", error)
+             })
+     }
+-    
++
+     const handleSaveProduct = (updated) => {
+-        // Gọi API PUT/PATCH ở đây nếu cần
+-        setProducts((prev) =>
+-          prev.map((p) => (p._id === updated._id ? updated : p))
+-        );
+-        setEditing(null);
++        setProducts(prev => ({
++            ...prev,
++            content: prev.content.map(p => (p.id === updated.id ? updated : p))
++        }))
++        setEditing(null)
+     }
+-    
++
+     return (
+-        <>
+-            <Container>
+-                <Row className="mt-5">
+-                    <Col xs={4}><p>Tên sản phẩm</p></Col>
+-                    <Col xs={3}><p>ID sản phẩm</p></Col>
+-                    <Col xs={1} className="text-end"><p>Giá tiền</p></Col>
+-                    <Col></Col> 
+-                </Row>
+-                {products.map((product) => (
+-                    <Row key={product._id} className="border">
+-                        <Col className="mb-2 mt-2" xs={4}>
+-                            <div className="d-flex">
+-                                <div>
+-                                    <img src={product.src} style={{maxHeight: "50px"}} alt={product.name} />
+-                                </div>
+-                                <div>
+-                                    <p>{product.name}</p>
+-                                </div>                                        
++        <Container>
++            <Row className="mt-5 d-flex align-items-center">
++                <Col xs={4}><strong>Tên sản phẩm</strong></Col>
++                <Col xs={3}><strong>ID sản phẩm</strong></Col>
++                <Col xs={1} className="text-end"><strong>Giá tiền</strong></Col>
++                <Col className = "d-flex justify-content-end"><Button>Thêm sản phẩm</Button></Col>
++            </Row>
++            <div className = "mb-3"></div>
++            {items.length === 0 ? (
++                <p className="text-center mt-5">Không có sản phẩm nào.</p>
++            ) : (
++                items.map((item) => (
++                    <Row key={item.id} className="border align-items-center py-2">
++                        <Col xs={4}>
++                            <div className="d-flex align-items-center gap-3">
++                                <img src={item.avatarUrl} style={{ maxHeight: "50px" }} alt={item.name} />
++                                <p className="mb-0">{item.name}</p>
+                             </div>
+                         </Col>
+-                        <Col className="mb-2 mt-2" xs={3}>
+-                            <div>
+-                                <p>{product._id}</p>
+-                            </div>
++                        <Col xs={3}>
++                            <p className="mb-0">{item.id}</p>
+                         </Col>
+-                        <Col className="mb-2 mt-2 text-end" xs={1}>
+-                            <div>
+-                                <p>{product.price ? product.price.toLocaleString('vi-VN') : "loading..."} đ</p>
+-                            </div>
++                        <Col xs={1} className="text-end">
++                            <p className="mb-0">
++                                {item.price ? item.price.toLocaleString('vi-VN') : "loading..."} đ
++                            </p>
+                         </Col>
+-                        <Col xs={4} className="d-flex justify-content-end gap-3 align-items-center">
+-                            <Button 
+-                                onClick={() => setEditing(product)}
+-                                style={{maxHeight: "40px"}}>
++                        <Col xs={4} className="d-flex justify-content-end gap-2">
++                            <Button
++                                variant="warning"
++                                onClick={() => setEditing(item)}
++                                style={{ maxHeight: "40px" }}
++                            >
+                                 Sửa
+                             </Button>
+                             <Button
+-                                onClick={() => handleDeleteProduct(product._id)}
+-                                style={{maxHeight: "40px", backgroundColor: "red"}}>
++                                variant="danger"
++                                onClick={() => handleDeleteProduct(item.id)}
++                                style={{ maxHeight: "40px" }}
++                            >
+                                 Xóa
+                             </Button>
+                         </Col>
+                     </Row>
+-                ))}
+-                
+-                <EditProductModal
+-                    show={!!editing}
+-                    product={editing}
+-                    onHide={() => setEditing(null)}
+-                    onSave={handleSaveProduct}
+-                />                
+-         
+-                <div className="mb-5"></div>
+-            </Container>
+-        </>
++                ))
++            )}
++
++            <EditProductModal
++                show={!!editing}
++                product={editing}
++                onHide={() => setEditing(null)}
++                onSave={handleSaveProduct}
++            />
++
++            <div className="mb-5"></div>
++        </Container>
+     )
+ }
+ 
+-export default ProductManage
+\ No newline at end of file
++export default ProductManage
+diff --git a/src/redux/apiRequest.js b/src/redux/apiRequest.js
+index c5a9f3a..ac44ef9 100644
+--- a/src/redux/apiRequest.js
++++ b/src/redux/apiRequest.js
+@@ -16,11 +16,10 @@ export const loginUser = async (user, dispatch, navigate) => {
+     dispatch(loginStart());
+ 
+     try {
+-        const res = await axios.post("http://localhost:8000/v1/auth/login", user);
++        const res = await axios.post("http://localhost:8080/auth/login", user);
+ 
+         dispatch(loginSuccess(res.data));
+ 
+-        // ✅ Lưu user vào localStorage để giữ trạng thái khi F5
+         localStorage.setItem("user", JSON.stringify(res.data));
+ 
+         navigate("/");
+-- 
+2.49.0.windows.1
+

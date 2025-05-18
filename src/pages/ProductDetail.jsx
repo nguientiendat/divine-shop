@@ -56,6 +56,7 @@ const ProductDetail = () => {
     const [showImageModal, setShowImageModal] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
 
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state => state.auth.login.currentUser))
@@ -89,6 +90,7 @@ const ProductDetail = () => {
             setLoading(false);
         });
 }, [id]);
+    console.log(products)
     // Xử lý thêm vào giỏ hàng
     const handleAddToCart = () => {
         if (!product) return;
@@ -399,12 +401,12 @@ const ProductDetail = () => {
                 <div className="px-4 mb-3 mb-md-0">
                     <p className="m-0">Sản phẩm</p>
                     <h3>{product.result.name}</h3>
-                    <p> <FontAwesomeIcon icon={faBox} /> Tình trạng: <span className='ct-color-green'>{product.result.status}</span></p>
+                    <p> <FontAwesomeIcon icon={faBox} /> Tình trạng: <span className='ct-color-green'>Còn {product.result.quantity} sản phẩm</span></p>
                     <p><FontAwesomeIcon icon={faTag} /> Thể loại: App, Giải trí, Game</p>
-                    <h4>{product.result.price? product.result.price.toLocaleString('vi-VN') : "Loading...!"}đ</h4>
+                    <h4>{product.result.price? (product.result.price-(product.result.price * product.result.discount / 100)).toLocaleString('vi-VN') : "Loading...!"}đ</h4>
                     <div className="d-flex align-items-center">
-                        <h5 className="ct-c m-0">{product.original_price? product.original_price.toLocaleString('vi-VN') : "Loading...!"}đ </h5>
-                        <span className="sale rounded fw-bold mx-2 p-1" >-{product.discount}%</span>
+                        <h5 className="ct-c m-0">{product.result.price? product.result.price.toLocaleString('vi-VN') : "Loading...!"}đ </h5>
+                        <span className="sale rounded fw-bold mx-2 p-1" >-{product.result.discount}%</span>
                     </div>
                     <div>
                         <div className="border w-100 my-3"></div>

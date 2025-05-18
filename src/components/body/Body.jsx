@@ -106,7 +106,7 @@ function Body() {
                         <h2 className = "text-white fw-bold ">#San Pham Ban Chay Nhat</h2>
                        </div>
                     </div>
-                    <Option value_id="3000" value = "z" />
+                    <Option className = "game" categoryId="c4b0f4bb-a879-49f1-9a0c-02317e0fe6bf" value = "z" />
                 </div>
             </div>                    
 
