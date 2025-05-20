@@ -55,11 +55,14 @@ const ProductDetail = () => {
     // State cho popup chèn ảnh
     const [showImageModal, setShowImageModal] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
+    
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const accessToken = userData?.result?.accessToken;
+    const user = userData?.result?.user_id;
 
-
+   
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state => state.auth.login.currentUser))
     useEffect(() => {
     setLoading(true);
     setError(null);
@@ -90,35 +93,40 @@ const ProductDetail = () => {
             setLoading(false);
         });
 }, [id]);
-    console.log(products)
+    // console.log(products)
+    console.log(user)
     // Xử lý thêm vào giỏ hàng
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (!product) return;
         if(!email.trim()||!phone.trim()) {
         setError("Vui lòng nhập đầy đủ email và số điện thoại!");
         return
        
+        }
+        if (user === null) {
+                alert("Vui lòng đăng nhập trước khi thêm vào giỏ hàng!");
+                navigate("/login"); // <-- chuyển hướng đến trang login
+                return;
+            
+        }
+        setError("");
+        try {
+            const response = await api.post("/api/cart-items", {
+            email: email,
+            password: phone, // hoặc token nếu bạn dùng xác thực bằng token
+            userId: user,
+            productId: id
+        },{
+            headers:{"Authorization":`Bearer ${accessToken}`}
+        });
+
+        console.log("Thêm vào giỏ thành công:", response.data);
+        // Có thể show thông báo hoặc cập nhật UI
+    } catch (error) {
+        console.error("Lỗi khi thêm vào giỏ hàng:", error);
+        // setError("Không thể thêm vào giỏ hàng. Vui lòng thử lại!");
     }
-     if (user === null) {
-            alert("Vui lòng đăng nhập trước khi thêm vào giỏ hàng!");
-            navigate("/login"); // <-- chuyển hướng đến trang login
-            return;
-        
-    }
-    setError("");
-        const data = {
-            user_id : user.id,
-            product_id: product.id,
-            name: product.name,
-            price: product.price,
-            original_price: product.original_price,
-            discount: product.discount,
-            src: product.src,
-            emailUser: email,
-            phoneNumber: phone
-        };
-        console.log(data)
-        addToCart(data, dispatch, navigate);
+      
     };
     // Tạo Decorator để xử lý entity IMAGE
     const createDecorator = () => {
@@ -145,11 +153,7 @@ const ProductDetail = () => {
     const [editorState, setEditorState] = useState(() => 
         EditorState.createEmpty(createDecorator())
     );
-    // console.log(id)
-    // Fetch dữ liệu sản phẩm
-   
-
-    // Lấy danh sách sản phẩm để hiển thị sản phẩm liên quan
+    
     useEffect(() => {
         fetch(`http://localhost:8080/api/products`)
             .then((response) => {

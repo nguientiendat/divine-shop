@@ -36,7 +36,7 @@ const Cart = () => {
     const handlePrice = () => {
         let price = 0;
         for (let i = 0; i < items?.length; i++) {
-            price += items[i].price;
+            price += items[i].product.price;
         }
 
         return price;
@@ -68,24 +68,27 @@ const Cart = () => {
         const showQr = () => {
         setIsVisible((prev) => !prev); //
     }
+const handleRemoveCart = async (cartItemId) => {
+  try {
+    await api.delete(`/api/cart-items/${cartItemId}`, {
+      params: { userId: user_id },
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log("Xóa sản phẩm thành công");
 
-  const handleRemoveCart = (productId) => {
-    const data = {
-      user_id: user_id,
-      product_id: productId
-    };
-    console.log(data)
-    deleteToCart(data, dispatch)
-                .then(() => {
-            // Đợi một chút để đảm bảo server đã xử lý xong
-             setTimeout(() => {
-                ; // Cập nhật lại giỏ hàng
-            }, 300);
-        })
-        .catch(error => {
-            console.error("Lỗi khi xóa sản phẩm:", error);
-        });
-  };
+    // Gọi lại API lấy giỏ hàng mới sau khi xóa
+    const res = await api.get(`/api/cart/user/${user_id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    setProducts(res.data); // cập nhật state để UI tự động render lại
+
+  } catch (err) {
+    console.error("Lỗi khi xóa sản phẩm:", err);
+  }
+};
+
     return(
          <div className="my-5">
             <Container>
@@ -107,7 +110,7 @@ const Cart = () => {
                                         />
                                     </div>
                                     <Button variant="outline-danger"
-                                        onClick={()=>  handleRemoveCart(item._id)}
+                                        onClick={()=>  handleRemoveCart(item.id)}
                                         className="position-absolute"
                                         style={{ bottom: '10px', right: '10px' }}>
                                         <FontAwesomeIcon icon={faTrash} />

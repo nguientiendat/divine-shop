@@ -17,6 +17,9 @@ const ProductManage = () => {
     const [sortDirection, setSortDirection] = useState(null);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const accessToken = userData?.result?.accessToken;
+
 
     const fetchProducts = (pageNumber = 0) => {
         setLoading(true);
@@ -76,33 +79,39 @@ const ProductManage = () => {
         fetchProducts(0);
     };
 
-    const handleDeleteProduct = async (product_id) => {
+    const handleDeleteProduct = async (product_id,product) => {
         const confirmed = window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?");
         if (!confirmed) return;
 
         try {
-            await api.delete(`/api/products/${product_id}`);
+            await api.delete(`/api/products/${product_id}`,{
+              headers: {"Authorization": `Bearer ${accessToken}`}
+            });
             setProducts(prevProducts =>
                 prevProducts.map(p =>
                     p.id === product_id ? { ...p, deleted: true } : p
                 )
             );
+            console.log(product)
         } catch (error) {
             console.error("Lỗi xóa sản phẩm:", error);
         }
     };
 
-    const handleRestoreProduct = async (product_id) => {
+    const handleRestoreProduct = async (product_id, product) => {
         const confirmed = window.confirm("Bạn có chắc chắn muốn khôi phục sản phẩm này không?");
         if (!confirmed) return;
 
         try {
-            await api.patch(`/api/products/${product_id}`);
+            await api.patch(`/api/products/${product_id}`,null,{
+                headers:{ Authorization: `Bearer ${accessToken}`}
+            });
             setProducts(prevProducts =>
                 prevProducts.map(p =>
                     p.id === product_id ? { ...p, deleted: false } : p
                 )
             );
+            console.log(product)
         } catch (error) {
             console.error("Lỗi khôi phục sản phẩm:", error);
         }
@@ -515,7 +524,7 @@ const ProductManage = () => {
                                                 variant="outline-success"
                                                 size="sm"
                                                 className="rounded-pill px-3"
-                                                onClick={() => handleRestoreProduct(product.id)}
+                                                onClick={() => handleRestoreProduct(product.id,product)}
                                             >
                                                 <FaSync className="me-md-1" />
                                                 <span className="d-none d-md-inline">Khôi phục</span>
@@ -525,7 +534,7 @@ const ProductManage = () => {
                                                 variant="outline-danger"
                                                 size="sm"
                                                 className="rounded-pill px-3"
-                                                onClick={() => handleDeleteProduct(product.id)}
+                                                onClick={() => handleDeleteProduct(product.id,product)}
                                             >
                                                 <FaTrashAlt className="me-md-1" />
                                                 <span className="d-none d-md-inline">Xóa</span>
