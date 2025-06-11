@@ -28,18 +28,17 @@ const Cart = () => {
   }, []);
 
   const items = Products?.result.items;
-  console.log(items);
 
   const handlePrice = () => {
     let price = 0;
     for (let i = 0; i < items?.length; i++) {
-      price += items[i].product.price;
+      console.log(items[i].product)
+      price += items[i].product.price - (items[i].product.price * items[i].product.discount / 100);
     }
 
     return price;
   };
   const totalAmount = handlePrice();
-
   const handleRemoveCart = async (cartItemId) => {
     try {
       await api.delete(`/api/cart-items/${cartItemId}`, {
@@ -111,7 +110,6 @@ const Cart = () => {
                       price={
                         item.product.price ? item.product.price : "loading...."
                       }
-                      // sale={item.original_price.toLocaleString('vi-VN')}
                       discount={item.product.discount}
                     />
                   </div>
