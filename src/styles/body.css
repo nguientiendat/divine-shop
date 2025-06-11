@@ -1,7 +1,10 @@
-body {
-    background-color: #F3F4F6
-}
 
+:root{
+ background-color: #F3F4F6
+}
+.darkmode{
+    background-color: #121212;
+}
 .ctm-img {
     width: 95%;
     /* height: 45%; */

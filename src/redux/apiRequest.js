@@ -1,17 +1,7 @@
 import axios from "axios"
 import {    deleteProductStart,deleteProductSuccess,deleteProductFailed,loginStart ,loginFailed, loginSuccess, registerStart, registerSuccess, registerFailed,addProductStart,addProductSuccess,addProductFailed } from "./authSlice";
 
-// export const loginUser = async (user, dispatch, navigate) => {
-//     dispatch(loginStart());
 
-//     try{
-//         const res = await axios.post("http://localhost:8000/v1/auth/login",user)
-//         dispatch(loginSuccess(res.data))
-//         navigate("/")
-//     }catch(err){
-//         dispatch(loginFailed())
-//     }
-// }
 export const loginUser = async (user, dispatch, navigate) => {
     dispatch(loginStart());
 
@@ -20,7 +10,7 @@ export const loginUser = async (user, dispatch, navigate) => {
 
         dispatch(loginSuccess(res.data));
 
-        localStorage.setItem("user", JSON.stringify(res.data));
+        localStorage.setItem("user", JSON.stringify(res.data.result));
 
         navigate("/");
     } catch (err) {
@@ -44,8 +34,8 @@ export const addToCart = async (data, dispatch)=>{
     dispatch(addProductStart());
     
     try{
-        const res = await axios.post(`http://localhost:8000/v1/cart/${data.user_id}` ,
-        { product_id: data.product_id } 
+        const res = await axios.post(`http://localhost:8080/auth/cart-items` ,
+        // headers: {"Authorization" : `Bearer ${accessToken}`}
 
             
         )

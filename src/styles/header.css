@@ -34,7 +34,9 @@
 }
 
 .set-bg-2 {
+    /* background-color: #2579F2; */
     background-color: #2579F2;
+
     padding: 10px;
     border: none
 }
@@ -96,4 +98,10 @@
 .logo-img{
     max-height: 50px !important;
     width: 40px;
+}
+.search-dropdown {
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 0.5rem;
 }

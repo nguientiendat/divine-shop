@@ -22,23 +22,25 @@
     "express": "^4.21.2",
     "json-server-router": "^2.8.0",
     "jsonwebtoken": "^9.0.2",
+    "lucide": "^0.513.0",
+    "lucide-react": "^0.513.0",
     "mongoose": "^8.9.3",
     "nodemon": "^3.1.9",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.3.1",
+    "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router": "^7.1.1",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "react-toastify": "^11.0.5",
+    "recharts": "^2.15.3"
   },
   "scripts": {
-    "start": "npm run react --host",
-    "react": "react-scripts start ",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "json": "json-server --watch testdb.json --port 5000 ",
-    "server":"node backend/server.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -59,6 +61,8 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.1.2",
+    "postcss": "^8.5.4"
   }
 }
