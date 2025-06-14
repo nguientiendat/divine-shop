@@ -15,8 +15,10 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import api from "../api/api";
+import { useSelector } from "react-redux";
 
 const UsersManage = () => {
+  const currentUser = useSelector((state) => state.auth.login.currentUser);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,7 +28,6 @@ const UsersManage = () => {
   const [actionLoading, setActionLoading] = useState({});
   const [notification, setNotification] = useState(null);
 
-  // Fetch users từ API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -102,13 +103,19 @@ const UsersManage = () => {
     );
   };
 
-  // Function to toggle user account status với API thực
+  // Function to toggle user account status with correct API endpoints
   const handleToggleUserStatus = async (userId, currentStatus) => {
     try {
       setActionLoading((prev) => ({ ...prev, [userId]: true }));
 
-      // Gọi API để thay đổi trạng thái user
-      const response = await api.delete(`/users/${userId}`);
+      let response;
+      if (currentStatus) {
+        // Nếu đang active, gọi DELETE để khóa
+        response = await api.delete(`/users/${userId}`);
+      } else {
+        // Nếu đang inactive, gọi PATCH để khôi phục
+        response = await api.patch(`/users/${userId}`);
+      }
 
       if (response.status === 200) {
         // Update user status trong local state
@@ -119,7 +126,7 @@ const UsersManage = () => {
         );
 
         // Hiển thị thông báo thành công
-        const message = !currentStatus
+        const message = currentStatus
           ? "Tài khoản đã bị khóa"
           : "Tài khoản đã được khôi phục";
         showNotification(message, "success");
@@ -337,114 +344,119 @@ const UsersManage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredUsers.map((user) => (
-                      <tr key={user.id}>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <div
-                              className="rounded-circle d-flex align-items-center justify-content-center me-3"
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                background:
-                                  "linear-gradient(45deg, #007bff, #6f42c1)",
-                                color: "white",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {user.username.charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                              <div className="fw-semibold">{user.username}</div>
-                              <small className="text-muted">
-                                ID: {user.id.split("-")[0]}...
-                              </small>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div>
-                            <div className="d-flex align-items-center mb-1">
-                              <Mail size={14} className="text-muted me-2" />
-                              <small>{user.email}</small>
-                            </div>
-                            <div className="d-flex align-items-center">
-                              <Phone size={14} className="text-muted me-2" />
-                              <small>{user.phone}</small>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            {getRoleIcon(user.role)}
-                            <span
-                              className={`ms-2 fw-semibold ${
-                                user.role === "ADMIN"
-                                  ? "text-danger"
-                                  : "text-primary"
-                              }`}
-                            >
-                              {user.role}
-                            </span>
-                          </div>
-                        </td>
-                        <td>
-                          {user.role === "ADMIN" ? (
-                            getStatusBadge(!user.active)
-                          ) : (
-                            <span className="badge bg-danger">
-                              Không hoạt động
-                            </span>
-                          )}
-                        </td>
-
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <Calendar size={14} className="text-muted me-2" />
-                            <small>{formatDate(user.createdAt)}</small>
-                          </div>
-                        </td>
-                        <td>
-                          <button
-                            className={`btn btn-sm ${
-                              user.active
-                                ? "btn-outline-danger"
-                                : "btn-outline-success"
-                            }`}
-                            onClick={() =>
-                              handleToggleUserStatus(user.id, user.active)
-                            }
-                            disabled={actionLoading[user.id]}
-                            title={
-                              user.active
-                                ? "Khóa tài khoản"
-                                : "Khôi phục tài khoản"
-                            }
-                          >
-                            {actionLoading[user.id] ? (
-                              <div
-                                className="spinner-border spinner-border-sm"
-                                role="status"
-                              >
-                                <span className="visually-hidden">
-                                  Loading...
+                    {filteredUsers.map((user) => {
+                      if (currentUser && user.id === currentUser.user_id)
+                        return;
+                      else {
+                        return (
+                          <tr key={user.id}>
+                            <td>
+                              <div className="d-flex align-items-center">
+                                <div
+                                  className="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                  style={{
+                                    width: "40px",
+                                    height: "40px",
+                                    background:
+                                      "linear-gradient(45deg, #007bff, #6f42c1)",
+                                    color: "white",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {user.username.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                  <div className="fw-semibold">
+                                    {user.username}
+                                  </div>
+                                  <small className="text-muted">
+                                    ID: {user.id.split("-")[0]}...
+                                  </small>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div>
+                                <div className="d-flex align-items-center mb-1">
+                                  <Mail size={14} className="text-muted me-2" />
+                                  <small>{user.email}</small>
+                                </div>
+                                <div className="d-flex align-items-center">
+                                  <Phone
+                                    size={14}
+                                    className="text-muted me-2"
+                                  />
+                                  <small>{user.phone}</small>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div className="d-flex align-items-center">
+                                {getRoleIcon(user.role)}
+                                <span
+                                  className={`ms-2 fw-semibold ${
+                                    user.role === "ADMIN"
+                                      ? "text-danger"
+                                      : "text-primary"
+                                  }`}
+                                >
+                                  {user.role}
                                 </span>
                               </div>
-                            ) : !user.active ? (
-                              <>
-                                <Lock size={14} className="me-1" />
-                                Khóa
-                              </>
-                            ) : (
-                              <>
-                                <Unlock size={14} className="me-1" />
-                                Khôi phục
-                              </>
-                            )}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                            </td>
+                            <td>{getStatusBadge(user.active)}</td>
+                            <td>
+                              <div className="d-flex align-items-center">
+                                <Calendar
+                                  size={14}
+                                  className="text-muted me-2"
+                                />
+                                <small>{formatDate(user.createdAt)}</small>
+                              </div>
+                            </td>
+                            <td>
+                              <button
+                                className={`btn btn-sm ${
+                                  user.active
+                                    ? "btn-outline-danger"
+                                    : "btn-outline-success"
+                                }`}
+                                onClick={() =>
+                                  handleToggleUserStatus(user.id, user.active)
+                                }
+                                disabled={actionLoading[user.id]}
+                                title={
+                                  user.active
+                                    ? "Khóa tài khoản"
+                                    : "Khôi phục tài khoản"
+                                }
+                              >
+                                {actionLoading[user.id] ? (
+                                  <div
+                                    className="spinner-border spinner-border-sm"
+                                    role="status"
+                                  >
+                                    <span className="visually-hidden">
+                                      Loading...
+                                    </span>
+                                  </div>
+                                ) : user.active ? (
+                                  <>
+                                    <Lock size={14} className="me-1" />
+                                    Khóa
+                                  </>
+                                ) : (
+                                  <>
+                                    <Unlock size={14} className="me-1" />
+                                    Khôi phục
+                                  </>
+                                )}
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      }
+                    })}
                   </tbody>
                 </table>
               </div>

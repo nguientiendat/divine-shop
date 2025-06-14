@@ -32,7 +32,7 @@ import AddCategoryModal from "../components/header/AddCategoryModal";
 const ProductManage = () => {
   const [products, setProducts] = useState([]);
   const [editing, setEditing] = useState(null);
-  const [showAddProduct, setShowAddProduct] = useState(false); // Đổi tên để rõ ràng hơn
+  const [showAddProduct, setShowAddProduct] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
 
   const [page, setPage] = useState(0);
@@ -256,7 +256,6 @@ const ProductManage = () => {
   return (
     <Container fluid className="py-4 px-md-4 bg-light min-vh-100">
       <div className="bg-white rounded shadow-sm p-4 mb-4">
-        {/* Header với các nút action được cải thiện */}
         <div className="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-4">
           <div className="mb-3 mb-lg-0">
             <h2 className="fw-bold text-primary mb-2">
@@ -282,7 +281,6 @@ const ProductManage = () => {
             </div>
           </div>
 
-          {/* Action buttons được cải thiện */}
           <div className="d-flex flex-column flex-sm-row gap-2">
             <Button
               variant="outline-primary"
@@ -303,7 +301,6 @@ const ProductManage = () => {
           </div>
         </div>
 
-        {/* Search và Filter section được cải thiện */}
         <Row className="mb-4">
           <Col lg={5} className="mb-3 mb-lg-0">
             <Form onSubmit={handleSearch}>
@@ -327,7 +324,6 @@ const ProductManage = () => {
 
           <Col lg={7}>
             <div className="d-flex flex-wrap gap-2 justify-content-lg-end">
-              {/* Dropdown danh mục được cải thiện */}
               <Dropdown>
                 <Dropdown.Toggle
                   variant="outline-secondary"
@@ -550,7 +546,6 @@ const ProductManage = () => {
         </Card>
       ) : (
         <div className="product-list">
-          {/* Table header được cải thiện */}
           <Card className="border-0 shadow-sm mb-3 overflow-hidden">
             <Card.Header className="bg-primary text-white py-3">
               <Row className="fw-bold">
@@ -573,7 +568,6 @@ const ProductManage = () => {
             </Card.Header>
           </Card>
 
-          {/* Product cards được cải thiện */}
           {filteredProducts.map((product) => (
             <Card
               key={product.id}
@@ -589,7 +583,7 @@ const ProductManage = () => {
                         src={product.avatarUrl || "/placeholder-product.png"}
                         alt={product.name}
                         fluid
-                        className="product-img shadow-sm"
+                        className="product-img shadow-sm w-auto"
                         style={{
                           height: "90px",
                           width: "90px",
@@ -687,7 +681,6 @@ const ProductManage = () => {
             </Card>
           ))}
 
-          {/* Pagination được cải thiện */}
           {totalPages > 1 && (
             <div className="d-flex justify-content-center mt-5">
               <Pagination size="lg" className="shadow-sm">
@@ -716,23 +709,22 @@ const ProductManage = () => {
         </div>
       )}
 
-      {/* Modals với state đã sửa */}
       <AddProductModal
-        show={showAddProduct} // Sửa từ showAdd thành showAddProduct
+        show={showAddProduct}
         onHide={() => setShowAddProduct(false)}
         onSave={(newProduct) => {
           setShowAddProduct(false);
           fetchProducts(0);
-          fetchCategories(); // Refresh categories nếu cần
+          fetchCategories();
         }}
       />
 
       <AddCategoryModal
-        show={showAddCategory} // Sửa từ showAdd thành showAddCategory
+        show={showAddCategory}
         onHide={() => setShowAddCategory(false)}
         onSave={() => {
           setShowAddCategory(false);
-          fetchCategories(); // Refresh categories sau khi thêm
+          fetchCategories();
           fetchProducts(0);
         }}
       />

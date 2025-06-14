@@ -1,69 +1,77 @@
-import axios from "axios"
-import {    deleteProductStart,deleteProductSuccess,deleteProductFailed,loginStart ,loginFailed, loginSuccess, registerStart, registerSuccess, registerFailed,addProductStart,addProductSuccess,addProductFailed } from "./authSlice";
-
+import axios from "axios";
+import {
+  deleteProductStart,
+  deleteProductSuccess,
+  deleteProductFailed,
+  loginStart,
+  loginFailed,
+  loginSuccess,
+  registerStart,
+  registerSuccess,
+  registerFailed,
+  addProductStart,
+  addProductSuccess,
+  addProductFailed,
+} from "./authSlice";
+import { toast } from "react-toastify";
 
 export const loginUser = async (user, dispatch, navigate) => {
-    dispatch(loginStart());
+  dispatch(loginStart());
 
-    try {
-        const res = await axios.post("http://localhost:8080/auth/login", user);
+  try {
+    const res = await axios.post("http://localhost:8080/auth/login", user);
 
-        dispatch(loginSuccess(res.data));
+    dispatch(loginSuccess(res.data));
 
-        localStorage.setItem("user", JSON.stringify(res.data.result));
+    localStorage.setItem("user", JSON.stringify(res.data.result));
 
-        navigate("/");
-    } catch (err) {
-        dispatch(loginFailed());
-        console.error("Đăng nhập thất bại:", err);
-    }
+    navigate("/");
+  } catch (err) {
+    toast.error(err.response.data.message);
+    dispatch(loginFailed());
+  }
 };
 export const registerUser = async (user, dispatch, navigate) => {
-    dispatch(registerStart());
+  dispatch(registerStart());
 
-    try{
-        const res = await axios.post("http://localhost:8000/v1/auth/register",user)
-        dispatch(registerSuccess(res.data))
-        navigate("/login")
-    }catch(err){
-        dispatch(registerFailed())
-    }
+  try {
+    const res = await axios.post("http://localhost:8080/auth/register", user);
+    dispatch(registerSuccess(res.data));
+    navigate("/login");
+  } catch (err) {
+    dispatch(registerFailed());
+  }
+};
+export const addToCart = async (data, dispatch) => {
+  dispatch(addProductStart());
 
-}
-export const addToCart = async (data, dispatch)=>{
-    dispatch(addProductStart());
-    
-    try{
-        const res = await axios.post(`http://localhost:8080/auth/cart-items` ,
-        // headers: {"Authorization" : `Bearer ${accessToken}`}
+  try {
+    const res = await axios.post(`http://localhost:8080/auth/cart-items`);
+    dispatch(addProductSuccess(res.data));
+  } catch (err) {
+    console.log(err);
+    dispatch(addProductFailed());
+  }
+};
+export const deleteProduct = async (data, dispatch) => {
+  dispatch(deleteProductStart());
 
-            
-        )
-        dispatch(addProductSuccess(res.data));
+  try {
+    const res = await axios.delete(
+      `http://localhost:8000/v1/product/${data.product_id}`
+    );
 
-    }catch(err){
-        console.log(err)
-        dispatch(addProductFailed())
-    }
-}
-export const deleteProduct = async (data, dispatch)=> {
-    dispatch(deleteProductStart())
-
-    try{
-        const res = await axios.delete(`http://localhost:8000/v1/product/${data.product_id}`)
-    
-        dispatch(deleteProductSuccess(res.data))
-    }catch(err){
-        console.log(deleteProductFailed())
-    }
-}
+    dispatch(deleteProductSuccess(res.data));
+  } catch (err) {
+    console.log(deleteProductFailed());
+  }
+};
 
 export const deleteToCart = async (data, dispatch) => {
   dispatch(deleteProductStart());
   try {
-    await axios.delete(`http://localhost:8000/v1/cart/${data.user_id}/${data.product_id}`
-    //     , {
-    //   data: { product_id: data.product_id }, } 
+    await axios.delete(
+      `http://localhost:8000/v1/cart/${data.user_id}/${data.product_id}`
     );
     dispatch(deleteProductSuccess());
   } catch (err) {

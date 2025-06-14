@@ -20,7 +20,6 @@ import {
 function Body() {
   const [images, setImages] = useState([]);
 
-  // Hàm getData để gọi API
   const getData = async () => {
     const url = "http://localhost:5000/slideShow";
     try {

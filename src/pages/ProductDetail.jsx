@@ -97,39 +97,6 @@ const ProductDetail = () => {
       });
   }, [id]);
   console.log(user);
-  // const handleAddToCart = async () => {
-  //     if (!product) return;
-  //     if(!email.trim()||!phone.trim()) {
-  //     setError("Vui lòng nhập đầy đủ email và số điện thoại!");
-  //     return
-
-  //     }
-  //     if (user === null) {
-  //             alert("Vui lòng đăng nhập trước khi thêm vào giỏ hàng!");
-  //             navigate("/login"); // <-- chuyển hướng đến trang login
-  //             return;
-
-  //     }
-  //     setError("");
-  //     try {
-  //         const response = await api.post("/api/cart-items", {
-  //         email: email,
-  //         password: phone, // hoặc token nếu bạn dùng xác thực bằng token
-  //         userId: user,
-  //         productId: id
-  //     },{
-  //         headers:{"Authorization":`Bearer ${accessToken}`}
-  //     });
-
-  //     console.log("Thêm vào giỏ thành công:", response.data);
-  //     // Có thể show thông báo hoặc cập nhật UI
-  // } catch (error) {
-  //     console.error("Lỗi khi thêm vào giỏ hàng:", error);
-  //     // setError("Không thể thêm vào giỏ hàng. Vui lòng thử lại!");
-  // }
-
-  // };
-  // Tạo Decorator để xử lý entity IMAGE
 
   const handleAddToCart = async () => {
     if (!product) return;

@@ -32,7 +32,6 @@ function SHeader() {
       try {
         const response = await api.get(`/api/products?page=0&size=100`);
         setProducts(response.data.content);
-        console.log(response.data.content);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách sản phẩm:", error);
       }
@@ -78,26 +77,28 @@ function SHeader() {
                         {user.email}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        <Dropdown.Item as={Link} to="/manage-account">
-                          Quản lý tài khoản
-                        </Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/order-history">
-                          Lịch sử đơn hàng
-                        </Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/product-manage">
-                          Quản lý sản phẩm
-                        </Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/dashboard">
-                          Dashboard
-                        </Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/users-manage">
-                          Quản lý Users
-                        </Dropdown.Item>
-
+                        {user.role === "ADMIN" && (
+                          <>
+                            <Dropdown.Item as={Link} to="/product-manage">
+                              Quản lý sản phẩm
+                            </Dropdown.Item>
+                            <Dropdown.Item as={Link} to="/dashboard">
+                              Dashboard
+                            </Dropdown.Item>
+                            <Dropdown.Item as={Link} to="/users-manage">
+                              Quản lý Users
+                            </Dropdown.Item>
+                          </>
+                        )}
+                        {user.role === "USER" && (
+                          <Dropdown.Item as={Link} to="/history">
+                            Lịch sử mua hàng
+                          </Dropdown.Item>
+                        )}
                         <Dropdown.Item
                           onClick={() => {
-                            localStorage.clear(); // hoặc removeItem("token") nếu bạn chỉ lưu token
-                            window.location.href = "/"; // hoặc dùng navigate nếu đang trong component
+                            localStorage.clear();
+                            window.location.href = "/";
                           }}
                         >
                           Đăng xuất

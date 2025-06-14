@@ -12,7 +12,10 @@ function Items({ id, src, name, price, original_price, discount, value }) {
   return (
     <div className="item">
       <div className="a">
-        <Link className="link-img" to={`${id}/product-detail`}>
+        <Link
+          className="link-img"
+          to={`http://localhost:3000/${id}/product-detail`}
+        >
           <img src={src} className="img-fluid rounded ct-img" />
         </Link>
       </div>
