@@ -100,7 +100,8 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     if (!product) return;
-
+    if (product.result.quantity === 0)
+      return toast.error("Sản phẩm hiện tại đã hết, vui lòng quay lại sau");
     if (!email.trim() || !phone.trim()) {
       setError("Vui lòng nhập đầy đủ email và số điện thoại!");
       toast.warn("Vui lòng nhập đầy đủ email và số điện thoại!");
@@ -175,7 +176,6 @@ const ProductDetail = () => {
       });
   }, []);
 
-  // Xử lý mua ngay
   const handleBuyNow = () => {
     if (!product) return;
 
